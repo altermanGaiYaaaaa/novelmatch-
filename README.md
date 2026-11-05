@@ -254,7 +254,7 @@ npm run desktop:build
 desktop/src-tauri/target/release/bundle/nsis/
 ```
 
-安装包会发布在 [GitHub Releases](../../releases)。
+安装包会发布在仓库的 GitHub Releases 页面。
 
 ### 浏览器预览
 
