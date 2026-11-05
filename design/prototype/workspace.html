@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>画像工作台 · NovelMatch</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+    html {
+      font-family: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color-scheme: light;
+    }
+    body {
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    ::selection {
+      background: #ddd6ff;
+      color: #2b2258;
+    }
+    .profile-item.is-active {
+      background: #F4F1FF;
+      box-shadow: inset 0 0 0 1px #E4DEFF;
+    }
+    .profile-item.is-active .profile-name {
+      color: #4E3FC7;
+      font-weight: 600;
+    }
+    .profile-item.is-active .profile-dot {
+      background: #6C5CE7;
+    }
+    #profileList {
+      scrollbar-width: none;
+    }
+    #profileList::-webkit-scrollbar {
+      display: none;
+    }
+    .result-reveal {
+      animation: resultIn 0.32s ease-out both;
+    }
+    @keyframes resultIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#F6F6FA] text-[#1D1B2B]">
+<!-- 左侧固定画像边栏 -->
+<aside class="fixed inset-y-0 left-0 z-30 flex w-[276px] flex-col border-r border-[#EAE9F2] bg-white">
+<a class="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-[#F0EFF6] px-6" href="home.html">
+<span class="flex h-9 w-9 items-center justify-center rounded-[11px] bg-gradient-to-br from-[#6C5CE7] to-[#8B7CF6] text-white shadow-[0_8px_18px_-8px_rgba(91,75,214,0.85)]">
+<iconify-icon class="text-[18px]" icon="lucide:book-open"></iconify-icon>
+</span>
+<span class="block">
+<span class="block text-[15px] font-semibold tracking-[-0.01em] text-[#211E31]">NovelMatch</span>
+<span class="mt-0.5 block text-[9px] font-medium uppercase tracking-[0.18em] text-[#A19DB0]">Taste Intelligence</span>
+</span>
+</a>
+<div class="shrink-0 px-4 pt-5">
+<a class="flex h-10 items-center justify-center gap-2 rounded-xl bg-[#5B4BD6] text-[13px] font-medium text-white shadow-[0_10px_22px_-12px_rgba(91,75,214,0.95)] transition hover:bg-[#4C3DC4]" href="create.html">
+<iconify-icon class="text-[15px]" icon="lucide:plus"></iconify-icon>
+        新建画像
+      </a>
+</div>
+<div class="flex min-h-0 flex-1 flex-col px-4 pt-6">
+<div class="flex items-center justify-between px-3 pb-2.5">
+<p class="text-[10.5px] font-medium uppercase tracking-[0.14em] text-[#AAA6B8]">我的画像</p>
+<span class="rounded-md bg-[#F2F0F7] px-1.5 py-0.5 text-[10px] font-medium text-[#8B869E]" id="profileCount">3</span>
+</div>
+<div class="min-h-0 space-y-1 overflow-y-auto pb-4" id="profileList">
+<button aria-pressed="true" class="profile-item is-active flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-[#F8F7FC]" data-profile="xuanhuan" type="button">
+<span class="profile-icon mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F3F0FF] text-[#5B4BD6]">
+<iconify-icon class="text-[15px]" icon="lucide:sparkles"></iconify-icon>
+</span>
+<span class="min-w-0 flex-1">
+<span class="profile-name block truncate text-[12.5px] font-medium text-[#3A344C]">玄幻严选</span>
+<span class="profile-meta mt-1 block truncate text-[10.5px] text-[#9A95A9]">玄幻 · 12 本已分析</span>
+</span>
+<span class="profile-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-transparent"></span>
+</button>
+<button aria-pressed="false" class="profile-item flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-[#F8F7FC]" data-profile="mystery" type="button">
+<span class="profile-icon mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F1F5F9] text-[#5C6B80]">
+<iconify-icon class="text-[15px]" icon="lucide:search"></iconify-icon>
+</span>
+<span class="min-w-0 flex-1">
+<span class="profile-name block truncate text-[12.5px] font-medium text-[#3A344C]">悬疑推理偏好</span>
+<span class="profile-meta mt-1 block truncate text-[10.5px] text-[#9A95A9]">悬疑 · 8 本已分析</span>
+</span>
+<span class="profile-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-transparent"></span>
+</button>
+<button aria-pressed="false" class="profile-item flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-[#F8F7FC]" data-profile="urban" type="button">
+<span class="profile-icon mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F1F7F4] text-[#4C8069]">
+<iconify-icon class="text-[15px]" icon="lucide:building-2"></iconify-icon>
+</span>
+<span class="min-w-0 flex-1">
+<span class="profile-name block truncate text-[12.5px] font-medium text-[#3A344C]">都市爽文观察</span>
+<span class="profile-meta mt-1 block truncate text-[10.5px] text-[#9A95A9]">都市 · 5 本已分析</span>
+</span>
+<span class="profile-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-transparent"></span>
+</button>
+</div>
+<div class="mb-4 shrink-0 rounded-xl border border-[#EFEDF6] bg-[#FBFAFE] p-3.5">
+<div class="flex items-center gap-2 text-[11.5px] font-medium text-[#5A5470]">
+<iconify-icon class="text-[13px] text-[#8D7FE0]" icon="lucide:target"></iconify-icon>
+          当前画像用于所有评估
+        </div>
+<p class="mt-1.5 text-[10.5px] leading-5 text-[#9893A7]">切换画像后，新的评估会立刻按新口味进行判断。</p>
+</div>
+</div>
+<div class="shrink-0 border-t border-[#F0EFF6] p-3">
+<a class="flex h-9 items-center gap-2.5 rounded-lg px-3 text-[12px] text-[#77728A] transition hover:bg-[#F7F6FB] hover:text-[#4E3FC7]" href="home.html#how">
+<iconify-icon class="text-[15px]" icon="lucide:circle-help"></iconify-icon>
+        使用指南
+      </a>
+<button class="mt-1 flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[12px] text-[#77728A] transition hover:bg-[#F7F6FB] hover:text-[#4E3FC7]" data-open-model-settings="" type="button">
+<iconify-icon class="text-[15px]" icon="lucide:cpu"></iconify-icon>
+        模型设置
+        <span class="ml-auto rounded-md bg-[#F1EFF7] px-1.5 py-0.5 text-[10px] font-medium text-[#8B869E]" data-model-status="">未配置</span>
+</button>
+<div class="mt-1 flex items-center gap-3 rounded-lg px-3 py-2">
+<span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#EDE9FF] text-[12px] font-semibold text-[#5B4BD6]">林</span>
+<div class="min-w-0">
+<p class="truncate text-[12.5px] font-medium text-[#2C283C]">林知微</p>
+<p class="text-[10.5px] text-[#9A96A9]">免费版 · 本月剩 18 次</p>
+</div>
+<button aria-label="模型设置" class="ml-auto text-[#A6A2B4] transition hover:text-[#5B4BD6]" data-open-model-settings="" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:settings"></iconify-icon>
+</button>
+</div>
+</div>
+</aside>
+<!-- 主区域 -->
+<div class="ml-[276px] flex min-h-screen flex-col">
+<header class="sticky top-0 z-20 flex h-[68px] shrink-0 items-center justify-between border-b border-[#EAE9F2] bg-white/85 px-9 backdrop-blur">
+<div class="flex items-center gap-2 text-[12.5px] text-[#8B879D]">
+<span class="flex items-center gap-1.5">
+<iconify-icon class="text-[14px]" icon="lucide:layout-dashboard"></iconify-icon>
+          画像工作台
+        </span>
+<span class="text-[#D6D3DE]">/</span>
+<span class="font-medium text-[#4C475E]" id="breadcrumbName">玄幻严选</span>
+</div>
+<div class="flex items-center gap-2.5">
+<button class="flex h-9 items-center gap-1.5 rounded-lg border border-[#E6E3EE] bg-white px-3 text-[12.5px] font-medium text-[#5E5971] shadow-[0_2px_4px_rgba(32,24,70,0.02)] transition hover:border-[#D5CDF6] hover:text-[#4E3FC7]" id="editBtn" type="button">
+<iconify-icon class="text-[14px]" icon="lucide:pencil"></iconify-icon>
+          编辑画像
+        </button>
+<span class="mx-0.5 h-5 w-px bg-[#ECEBF2]"></span>
+<span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#EDE9FF] text-[12px] font-semibold text-[#5B4BD6]">林</span>
+</div>
+</header>
+<main class="mx-auto w-full max-w-[1220px] flex-1 px-9 pb-16 pt-7">
+<!-- 画像概览 -->
+<section class="relative overflow-hidden rounded-2xl border border-[#E8E6F1] bg-white shadow-[0_20px_50px_-38px_rgba(44,36,96,0.5)]">
+<div class="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#6C5CE7] via-[#9A8DEE] to-[#D8CFFB]"></div>
+<div class="pointer-events-none absolute -right-20 -top-24 h-[260px] w-[260px] rounded-full bg-[#F6F3FF]"></div>
+<div class="relative p-6 lg:p-7">
+<div class="flex flex-col justify-between gap-5 xl:flex-row xl:items-start">
+<div class="flex items-start gap-4">
+<span class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl border border-[#E8E2FC] bg-[#F4F0FF] text-[#5B4BD6]">
+<iconify-icon class="text-[24px]" icon="lucide:sparkles" id="profileIcon"></iconify-icon>
+</span>
+<div class="min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<h1 class="text-[22px] font-semibold tracking-[-0.02em] text-[#211E31]" id="profileTitle">玄幻严选</h1>
+<span class="rounded-md border border-[#E4DDFB] bg-[#F6F3FF] px-2 py-0.5 text-[10.5px] font-medium text-[#6557C4]" id="profileGenre">玄幻</span>
+<span class="flex items-center gap-1 rounded-md bg-[#EEF9F3] px-2 py-0.5 text-[10.5px] font-medium text-[#268B5D]">
+<span class="h-1 w-1 rounded-full bg-[#34A874]"></span>
+                    当前使用
+                  </span>
+</div>
+<p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-[#9691A6]">
+<span>最近更新：<span class="text-[#6F6A80]" id="updatedAt">2026 年 11 月 2 日</span></span>
+<span class="text-[#D6D2E0]">·</span>
+<span>画像 ID：NM-2084</span>
+</p>
+</div>
+</div>
+<div class="grid shrink-0 grid-cols-3 divide-x divide-[#F0EDF6] rounded-xl border border-[#F0EDF6] bg-[#FCFBFE] px-2 py-3 xl:min-w-[318px]">
+<div class="px-4 text-center">
+<p class="text-[16px] font-semibold tabular-nums text-[#2B273C]"><span id="analyzedStat">12</span><span class="ml-0.5 text-[10px] font-normal text-[#A29DAF]">本</span></p>
+<p class="mt-1 text-[10px] text-[#918CA2]">已分析作品</p>
+</div>
+<div class="px-4 text-center">
+<p class="text-[16px] font-semibold text-[#2B273C]" id="confidenceStat">高</p>
+<p class="mt-1 text-[10px] text-[#918CA2]">画像置信度</p>
+</div>
+<div class="px-4 text-center">
+<p class="text-[16px] font-semibold tabular-nums text-[#2B273C]"><span id="keywordStat">6</span><span class="ml-0.5 text-[10px] font-normal text-[#A29DAF]">个</span></p>
+<p class="mt-1 text-[10px] text-[#918CA2]">偏好关键词</p>
+</div>
+</div>
+</div>
+<div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_274px]">
+<div class="rounded-xl border border-[#F2EFF8] bg-[#FBFAFE] p-5">
+<div class="flex items-center gap-2">
+<span class="flex h-6 w-6 items-center justify-center rounded-md bg-[#F0EBFF] text-[#6C5CE7]">
+<iconify-icon class="text-[12px]" icon="lucide:scan-text"></iconify-icon>
+</span>
+<h2 class="text-[11.5px] font-semibold tracking-wide text-[#5B5471]">阅读品味总结</h2>
+<span class="ml-auto text-[10px] text-[#A6A1B2]">AI 归纳 · 可编辑</span>
+</div>
+<p class="mt-3 text-[13px] leading-[1.85] text-[#4F4A61]" id="profileSummary">
+                你偏爱设定严密、升级有代价的东方玄幻。比起一路平推的爽感，你更享受主角在规则内反复试探、靠判断与取舍走出困局的过程；群像与权谋是加分项，感情线克制反而更合口味。
+              </p>
+</div>
+<div class="rounded-xl border border-[#F2EFF8] bg-white p-5">
+<div class="flex items-center justify-between">
+<h2 class="text-[11.5px] font-semibold tracking-wide text-[#5B5471]">偏好关键词</h2>
+<span class="text-[10px] text-[#A6A1B2]">按强度排序</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-1.5" id="keywordWrap">
+<span class="inline-flex items-center rounded-lg border border-[#E6E1FA] bg-[#F7F5FF] px-2.5 py-1 text-[11px] font-medium text-[#5A4BC8]">世界观缜密</span>
+<span class="inline-flex items-center rounded-lg border border-[#E6E1FA] bg-[#F7F5FF] px-2.5 py-1 text-[11px] font-medium text-[#5A4BC8]">升级有代价</span>
+<span class="inline-flex items-center rounded-lg border border-[#E6E1FA] bg-[#F7F5FF] px-2.5 py-1 text-[11px] font-medium text-[#5A4BC8]">群像权谋</span>
+<span class="inline-flex items-center rounded-lg border border-[#E6E1FA] bg-[#F7F5FF] px-2.5 py-1 text-[11px] font-medium text-[#5A4BC8]">冷峻文风</span>
+<span class="inline-flex items-center rounded-lg border border-[#E6E1FA] bg-[#F7F5FF] px-2.5 py-1 text-[11px] font-medium text-[#5A4BC8]">慢热铺垫</span>
+<span class="inline-flex items-center rounded-lg border border-[#E6E1FA] bg-[#F7F5FF] px-2.5 py-1 text-[11px] font-medium text-[#5A4BC8]">克制感情线</span>
+</div>
+<p class="mt-3 text-[10.5px] leading-5 text-[#9E99AC]">这些关键词由你的作品记录与标记自动归纳，可随画像一起编辑。</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 口味边界 -->
+<section class="mt-6">
+<div class="mb-3.5 flex flex-wrap items-end justify-between gap-2 px-0.5">
+<div>
+<h2 class="text-[14.5px] font-semibold text-[#2C283C]">你的口味边界</h2>
+<p class="mt-1 text-[11.5px] text-[#918CA2]">NovelMatch 会优先寻找命中左侧特征的作品，并对右侧风险保持敏感。</p>
+</div>
+<span class="flex items-center gap-1.5 text-[10.5px] text-[#9B96A9]">
+<iconify-icon class="text-[12px]" icon="lucide:refresh-cw"></iconify-icon>
+            依据 12 本作品记录生成
+          </span>
+</div>
+<div class="grid gap-4 lg:grid-cols-2">
+<div class="rounded-2xl border border-[#E8E6F1] bg-white p-5 shadow-[0_14px_34px_-32px_rgba(44,36,96,0.45)]">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECF9F2] text-[#249667]">
+<iconify-icon class="text-[15px]" icon="lucide:thumbs-up"></iconify-icon>
+</span>
+<div>
+<h3 class="text-[13px] font-semibold text-[#2E2A40]">喜欢的特征</h3>
+<p class="mt-0.5 text-[10.5px] text-[#9A95A8]">看到这些，通常会更投入</p>
+</div>
+</div>
+<span class="rounded-md bg-[#F0FAF5] px-2 py-0.5 text-[10px] font-medium text-[#2E9467]" id="likeCount">3 项</span>
+</div>
+<ul class="mt-4 space-y-2.5" id="likesList">
+<li class="flex items-start gap-3 rounded-xl border border-[#F0EDF8] bg-[#FCFBFE] p-3.5">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E9F8EF] text-[#1F9D62]">
+<iconify-icon class="text-[11px]" icon="lucide:check"></iconify-icon>
+</span>
+<span>
+<span class="block text-[12.5px] font-medium text-[#2B273B]">可推演的力量体系</span>
+<span class="mt-1 block text-[11.5px] leading-5 text-[#7B768C]">境界、资源与代价有清晰边界，不靠临时开挂解决冲突。</span>
+</span>
+</li>
+<li class="flex items-start gap-3 rounded-xl border border-[#F0EDF8] bg-[#FCFBFE] p-3.5">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E9F8EF] text-[#1F9D62]">
+<iconify-icon class="text-[11px]" icon="lucide:check"></iconify-icon>
+</span>
+<span>
+<span class="block text-[12.5px] font-medium text-[#2B273B]">有分量的配角与博弈</span>
+<span class="mt-1 block text-[11.5px] leading-5 text-[#7B768C]">配角有自己的目标，权谋线能真正改变局势走向。</span>
+</span>
+</li>
+<li class="flex items-start gap-3 rounded-xl border border-[#F0EDF8] bg-[#FCFBFE] p-3.5">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E9F8EF] text-[#1F9D62]">
+<iconify-icon class="text-[11px]" icon="lucide:check"></iconify-icon>
+</span>
+<span>
+<span class="block text-[12.5px] font-medium text-[#2B273B]">慢热但扎实的开局</span>
+<span class="mt-1 block text-[11.5px] leading-5 text-[#7B768C]">愿意用前二十章铺世界观，只要线索最终能收束。</span>
+</span>
+</li>
+</ul>
+</div>
+<div class="rounded-2xl border border-[#E8E6F1] bg-white p-5 shadow-[0_14px_34px_-32px_rgba(44,36,96,0.45)]">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FFF3F4] text-[#C25867]">
+<iconify-icon class="text-[15px]" icon="lucide:thumbs-down"></iconify-icon>
+</span>
+<div>
+<h3 class="text-[13px] font-semibold text-[#2E2A40]">不喜欢的特征</h3>
+<p class="mt-0.5 text-[10.5px] text-[#9A95A8]">出现这些，容易让你弃书</p>
+</div>
+</div>
+<span class="rounded-md bg-[#FFF5F5] px-2 py-0.5 text-[10px] font-medium text-[#B75A68]" id="dislikeCount">3 项</span>
+</div>
+<ul class="mt-4 space-y-2.5" id="dislikesList">
+<li class="flex items-start gap-3 rounded-xl border border-[#F0EDF8] bg-[#FCFBFE] p-3.5">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FFF0F2] text-[#C25867]">
+<iconify-icon class="text-[11px]" icon="lucide:minus"></iconify-icon>
+</span>
+<span>
+<span class="block text-[12.5px] font-medium text-[#2B273B]">无代价的连续越级</span>
+<span class="mt-1 block text-[11.5px] leading-5 text-[#7B768C]">战力体系形同虚设，主角靠情绪或血脉瞬间翻盘。</span>
+</span>
+</li>
+<li class="flex items-start gap-3 rounded-xl border border-[#F0EDF8] bg-[#FCFBFE] p-3.5">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FFF0F2] text-[#C25867]">
+<iconify-icon class="text-[11px]" icon="lucide:minus"></iconify-icon>
+</span>
+<span>
+<span class="block text-[12.5px] font-medium text-[#2B273B]">工具人式配角</span>
+<span class="mt-1 block text-[11.5px] leading-5 text-[#7B768C]">角色只为衬托主角存在，对话和动机高度功能化。</span>
+</span>
+</li>
+<li class="flex items-start gap-3 rounded-xl border border-[#F0EDF8] bg-[#FCFBFE] p-3.5">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#FFF0F2] text-[#C25867]">
+<iconify-icon class="text-[11px]" icon="lucide:minus"></iconify-icon>
+</span>
+<span>
+<span class="block text-[12.5px] font-medium text-[#2B273B]">注水式日常</span>
+<span class="mt-1 block text-[11.5px] leading-5 text-[#7B768C]">主线停滞，用重复的打脸与闲聊拉长篇幅。</span>
+</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 评估入口 -->
+<section class="mt-6 overflow-hidden rounded-2xl border border-[#E8E6F1] bg-white shadow-[0_18px_44px_-36px_rgba(44,36,96,0.5)]">
+<div class="p-6">
+<div class="flex flex-wrap items-start justify-between gap-3">
+<div class="flex items-start gap-3">
+<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F3F0FF] text-[#5B4BD6]">
+<iconify-icon class="text-[17px]" icon="lucide:link-2"></iconify-icon>
+</span>
+<div>
+<h2 class="text-[15px] font-semibold text-[#2A263B]">评估一本新小说</h2>
+<p class="mt-1 text-[11.5px] leading-5 text-[#8D889C]">粘贴作品链接，看看它与你当前阅读品味的匹配程度。</p>
+</div>
+</div>
+<span class="rounded-lg border border-[#EAE6F6] bg-[#FBFAFE] px-2.5 py-1 text-[10.5px] text-[#7B7492]" id="evalProfileBadge">基于「玄幻严选」</span>
+</div>
+<form class="mt-5 flex flex-col gap-2.5 sm:flex-row" id="evalForm">
+<div class="relative flex-1">
+<iconify-icon class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-[#A8A3B6]" icon="lucide:link"></iconify-icon>
+<input autocomplete="off" class="h-11 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] pl-10 pr-3.5 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="novelUrl" placeholder="粘贴小说链接，例如 https://www.qidian.com/book/1043210/" type="text"/>
+</div>
+<button class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#5B4BD6] px-6 text-[13px] font-medium text-white shadow-[0_10px_22px_-12px_rgba(91,75,214,0.95)] transition hover:bg-[#4C3DC4] disabled:cursor-not-allowed disabled:opacity-75" id="evalBtn" type="submit">
+<span id="evalBtnText">评估</span>
+<iconify-icon class="hidden animate-spin text-[14px]" icon="lucide:loader-2" id="evalSpinner"></iconify-icon>
+<iconify-icon class="text-[14px]" icon="lucide:arrow-right" id="evalArrow"></iconify-icon>
+</button>
+</form>
+<div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+<p class="flex items-center gap-1.5 text-[10.5px] text-[#9E99AC]">
+<iconify-icon class="text-[12px]" icon="lucide:info"></iconify-icon>
+              支持起点、晋江、番茄等平台公开链接
+            </p>
+<button class="text-[10.5px] font-medium text-[#6C5CE7] transition hover:text-[#4C3DC4]" id="sampleBtn" type="button">填入示例链接</button>
+</div>
+<p class="mt-2 hidden text-[11px] text-[#B04A5D]" id="evalError">请先粘贴小说链接，再开始评估。</p>
+<p class="mt-2 hidden items-center gap-1.5 text-[11px] text-[#B4742E]" id="evalModelHint">
+<iconify-icon class="text-[13px]" icon="lucide:triangle-alert"></iconify-icon>
+<span>尚未配置模型，评估前请先填写你的 API Key。</span>
+<button class="font-medium text-[#5B4BD6] underline decoration-[#C9BFF4] underline-offset-2 transition hover:text-[#4C3DC4]" data-open-model-settings="" type="button">去设置</button>
+</p>
+</div>
+</section>
+<!-- 评估加载态 -->
+<div class="mt-5 hidden rounded-2xl border border-[#E8E5F2] bg-white p-6 shadow-[0_18px_44px_-36px_rgba(44,36,96,0.5)]" id="loadingCard">
+<div class="flex flex-wrap items-center gap-3">
+<span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F3F0FF] text-[#6C5CE7]">
+<iconify-icon class="animate-spin text-[18px]" icon="lucide:loader-2"></iconify-icon>
+</span>
+<div>
+<p class="text-[13px] font-medium text-[#2E2A40]">正在比对「<span id="loadingProfileName">玄幻严选</span>」的阅读偏好</p>
+<p class="mt-1 text-[11px] text-[#9691A6]">解析作品设定、文风样本与读者反馈，通常需要几秒。</p>
+</div>
+<span class="ml-auto rounded-md bg-[#F4F1FF] px-2 py-1 text-[10px] font-medium text-[#6557C4]">AI 评估中</span>
+</div>
+<div class="mt-5 space-y-2.5">
+<div class="h-2.5 w-2/3 animate-pulse rounded-full bg-[#F1EEF8]"></div>
+<div class="h-2.5 w-full animate-pulse rounded-full bg-[#F5F3FA]"></div>
+<div class="h-2.5 w-4/5 animate-pulse rounded-full bg-[#F5F3FA]"></div>
+</div>
+</div>
+<!-- 评估结果 -->
+<div class="mt-5 hidden" id="resultWrap">
+<section class="result-reveal overflow-hidden rounded-2xl border border-[#E4E1F2] bg-white shadow-[0_28px_64px_-40px_rgba(45,35,100,0.55)]">
+<div class="border-b border-[#F0EDF6] bg-[#FCFBFE] p-5 lg:p-6">
+<div class="flex flex-wrap items-center gap-4">
+<div class="relative flex h-[88px] w-[64px] shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[#DCD5F4] bg-gradient-to-br from-[#40366B] to-[#7565B8] shadow-[0_10px_20px_-14px_rgba(50,38,110,0.8)]">
+<span class="absolute left-1 top-1 h-3 w-3 border-l border-t border-white/25"></span>
+<span class="absolute bottom-1 right-1 h-3 w-3 border-b border-r border-white/25"></span>
+<span class="text-[17px] font-medium tracking-[0.18em] text-white [writing-mode:vertical-rl]" id="resultCoverText">归墟</span>
+</div>
+<div class="min-w-0 flex-1">
+<p class="text-[10px] font-medium tracking-[0.04em] text-[#8F83C9]" id="resultTopBadge">评估结果 · 玄幻</p>
+<h3 class="mt-1.5 text-[18px] font-semibold tracking-[-0.01em] text-[#232034]" id="resultTitle">《归墟剑主》</h3>
+<p class="mt-1 text-[11px] text-[#918CA2]" id="resultAuthor">沈砚舟 · 长宁文社 · 连载中</p>
+<div class="mt-2.5 flex flex-wrap gap-1.5" id="resultTags">
+<span class="rounded-md bg-white px-2 py-0.5 text-[10px] text-[#6F6983] ring-1 ring-[#ECE8F5]">世界观流</span>
+<span class="rounded-md bg-white px-2 py-0.5 text-[10px] text-[#6F6983] ring-1 ring-[#ECE8F5]">群像权谋</span>
+<span class="rounded-md bg-white px-2 py-0.5 text-[10px] text-[#6F6983] ring-1 ring-[#ECE8F5]">慢热</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative flex h-[76px] w-[76px] items-center justify-center rounded-full" id="scoreRing" style="background: conic-gradient(#5B4BD6 0% 88%, #ECE9F8 88% 100%);">
+<div class="flex h-[62px] w-[62px] flex-col items-center justify-center rounded-full bg-white">
+<span class="text-[20px] font-semibold leading-none tabular-nums text-[#2A2540]" id="resultScore">88</span>
+<span class="mt-1 text-[9px] text-[#9A95A8]">匹配度</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-5 lg:p-6">
+<div class="flex items-start gap-2.5 rounded-xl border border-[#DDF3E8] bg-[#F4FBF7] px-4 py-3">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#DDF3E8] text-[#1F9D62]">
+<iconify-icon class="text-[11px]" icon="lucide:check"></iconify-icon>
+</span>
+<div>
+<p class="text-[12.5px] font-semibold text-[#227A50]" id="resultVerdict">高度匹配，建议优先阅读</p>
+<p class="mt-1 text-[11px] leading-5 text-[#5E8F76]" id="resultVerdictNote">与「玄幻严选」的核心偏好有 4 项重合，节奏风险可控。</p>
+</div>
+</div>
+<div class="mt-5 grid gap-5 lg:grid-cols-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECF9F2] text-[#249667]">
+<iconify-icon class="text-[12px]" icon="lucide:thumbs-up"></iconify-icon>
+</span>
+<h4 class="text-[12px] font-semibold text-[#3A344C]">推荐理由</h4>
+<span class="text-[10px] text-[#AAA5B5]">与你的画像高度相关</span>
+</div>
+<ul class="mt-3 space-y-3" id="resultReasons">
+<li class="flex items-start gap-2.5">
+<iconify-icon class="mt-0.5 shrink-0 text-[14px] text-[#34A874]" icon="lucide:check-circle-2"></iconify-icon>
+<div>
+<p class="text-[12px] font-medium text-[#38334A]">力量体系有明确代价</p>
+<p class="mt-1 text-[11.5px] leading-5 text-[#817C91]">开篇即建立“借剑必还”的规则，后续升级都围绕代价展开，不靠临时开挂。</p>
+</div>
+</li>
+</ul>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="flex h-6 w-6 items-center justify-center rounded-md bg-[#FFF3F4] text-[#C25867]">
+<iconify-icon class="text-[12px]" icon="lucide:triangle-alert"></iconify-icon>
+</span>
+<h4 class="text-[12px] font-semibold text-[#3A344C]">需要留意</h4>
+<span class="text-[10px] text-[#AAA5B5]">可能触发你的弃书点</span>
+</div>
+<ul class="mt-3 space-y-3" id="resultRisks">
+<li class="flex items-start gap-2.5">
+<iconify-icon class="mt-0.5 shrink-0 text-[14px] text-[#D0833D]" icon="lucide:alert-circle"></iconify-icon>
+<div>
+<p class="text-[12px] font-medium text-[#38334A]">前 12 章节奏偏慢</p>
+<p class="mt-1 text-[11.5px] leading-5 text-[#817C91]">世界观信息集中，若不习惯连续铺垫，可能在前三万字略感吃力。</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="mt-5 rounded-xl border border-[#EEECF6] bg-[#FAFAFD] px-4 py-3.5">
+<div class="flex items-center gap-2 text-[10px] font-medium tracking-[0.04em] text-[#9994A8]">
+<iconify-icon class="text-[12px] text-[#9A8DEE]" icon="lucide:quote"></iconify-icon>
+                文风样本
+              </div>
+<p class="mt-2 text-[12px] leading-6 text-[#514B63]" id="resultQuote">“剑修一途，借来的每一寸锋芒，都要用余生去还。”</p>
+<p class="mt-1 text-[10px] text-[#A29DAD]" id="resultQuoteSource">第 3 章 · 借剑</p>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#F0EDF6] bg-[#FCFCFE] px-5 py-4 lg:px-6">
+<p class="flex items-center gap-1.5 text-[10px] text-[#A09BAC]">
+<iconify-icon class="text-[12px]" icon="lucide:clock-3"></iconify-icon>
+              评估于 <span id="resultTime">2026-11-04 14:55</span> · 结果仅供参考
+            </p>
+<p class="order-last flex min-w-0 basis-full flex-wrap items-center gap-x-3 gap-y-1 text-[10px] leading-5 text-[#A09BAC] lg:order-none lg:basis-auto">
+<span class="flex items-center gap-1.5">
+<iconify-icon class="text-[12px]" icon="lucide:cpu"></iconify-icon>
+<span>模型 <span class="font-medium text-[#77728A]" id="resultModelName">演示模型</span></span>
+</span>
+<span class="flex min-w-0 items-center gap-1.5">
+<iconify-icon class="shrink-0 text-[12px]" icon="lucide:globe"></iconify-icon>
+<span class="truncate">接口 <span class="font-medium text-[#77728A]" id="resultModelUrl">—</span></span>
+</span>
+</p>
+<div class="flex items-center gap-2">
+<button class="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E2EC] bg-white px-3.5 text-[12px] font-medium text-[#6B657E] transition hover:bg-[#F8F7FB]" id="skipBtn" type="button">暂不考虑</button>
+<button class="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-[#5B4BD6] px-3.5 text-[12px] font-medium text-white transition hover:bg-[#4C3DC4]" id="bookmarkBtn" type="button">
+<iconify-icon class="text-[13px]" icon="lucide:bookmark-plus"></iconify-icon>
+<span id="bookmarkText">加入想读清单</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- 编辑画像弹窗 -->
+<div class="fixed inset-0 z-50 hidden" id="editModal">
+<div class="absolute inset-0 bg-[#1A1630]/40 backdrop-blur-[2px]" data-close-modal=""></div>
+<div class="relative mx-auto mt-[9vh] w-[calc(100%-40px)] max-w-[520px] overflow-hidden rounded-2xl border border-white/60 bg-white shadow-[0_30px_80px_-20px_rgba(25,18,60,0.45)]">
+<div class="flex items-start justify-between border-b border-[#F0EEF5] px-6 py-4">
+<div>
+<h2 class="text-[15px] font-semibold text-[#262236]">编辑画像</h2>
+<p class="mt-1 text-[11px] text-[#9691A6]">调整名称、偏好摘要与关键词，不会影响已有的评估记录。</p>
+</div>
+<button aria-label="关闭" class="flex h-7 w-7 items-center justify-center rounded-lg text-[#9A95A9] transition hover:bg-[#F5F3FA] hover:text-[#4E3FC7]" data-close-modal="" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:x"></iconify-icon>
+</button>
+</div>
+<div class="max-h-[62vh] overflow-y-auto px-6 py-5">
+<label class="text-[12px] font-medium text-[#3C374E]" for="editName">画像名称</label>
+<input class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="editName" maxlength="20" type="text"/>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="editSummary">阅读品味总结</label>
+<textarea class="mt-2 w-full resize-none rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 py-2.5 text-[12.5px] leading-6 text-[#2A263B] outline-none transition focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="editSummary" rows="4"></textarea>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">建议写清楚你偏爱的类型、节奏和叙事方式。</p>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="editKeywords">偏好关键词</label>
+<input class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="editKeywords" type="text"/>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">用逗号分隔，最多保留 8 个关键词。</p>
+</div>
+<div class="flex items-center justify-between border-t border-[#F0EEF5] bg-[#FCFCFE] px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10.5px] text-[#A09BAC]">
+<iconify-icon class="text-[12px]" icon="lucide:shield-check"></iconify-icon>
+          仅你可见
+        </span>
+<div class="flex items-center gap-2">
+<button class="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E2EC] bg-white px-4 text-[12px] font-medium text-[#605B73] transition hover:bg-[#F8F7FB]" data-close-modal="" type="button">取消</button>
+<button class="inline-flex h-9 items-center justify-center rounded-lg bg-[#5B4BD6] px-4 text-[12px] font-medium text-white transition hover:bg-[#4C3DC4]" id="saveEditBtn" type="button">保存修改</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 轻提示 -->
+<div class="pointer-events-none fixed bottom-8 left-1/2 z-[60] hidden -translate-x-1/2" id="toast">
+<div class="flex items-center gap-2 rounded-xl bg-[#231D3B] px-4 py-2.5 text-[12.5px] text-white shadow-[0_18px_40px_-18px_rgba(20,14,50,0.8)]">
+<iconify-icon class="text-[14px] text-[#A99BF5]" icon="lucide:check-circle-2" id="toastIcon"></iconify-icon>
+<span id="toastText">画像已更新</span>
+</div>
+</div>
+<!-- 模型设置弹窗 -->
+<div class="fixed inset-0 z-50 hidden" id="modelModal">
+<div class="absolute inset-0 bg-[#1A1630]/40 backdrop-blur-[2px]" data-close-model-modal=""></div>
+<div class="relative mx-auto mt-[9vh] w-[calc(100%-40px)] max-w-[520px] overflow-hidden rounded-2xl border border-white/60 bg-white shadow-[0_30px_80px_-20px_rgba(25,18,60,0.45)]">
+<div class="flex items-start justify-between border-b border-[#F0EEF5] px-6 py-4">
+<div>
+<h2 class="text-[15px] font-semibold text-[#262236]">模型设置</h2>
+<p class="mt-1 text-[11px] text-[#9691A6]">填入你自己的 API Key，评估会通过你指定的模型完成。</p>
+</div>
+<button aria-label="关闭" class="flex h-7 w-7 items-center justify-center rounded-lg text-[#9A95A9] transition hover:bg-[#F5F3FA] hover:text-[#4E3FC7]" data-close-model-modal="" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:x"></iconify-icon>
+</button>
+</div>
+<div class="max-h-[62vh] overflow-y-auto px-6 py-5">
+<label class="text-[12px] font-medium text-[#3C374E]" for="modelApiKey">API Key</label>
+<div class="relative mt-2">
+<input autocomplete="off" class="h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] pl-3.5 pr-11 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelApiKey" placeholder="sk-..." spellcheck="false" type="password"/>
+<button aria-label="显示 API Key" aria-pressed="false" class="absolute right-1.5 top-1/2 flex h-7 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-[#A6A2B4] transition hover:bg-[#F5F3FA] hover:text-[#5B4BD6]" id="toggleApiKey" type="button">
+<iconify-icon class="text-[15px]" icon="lucide:eye" id="toggleApiKeyIcon"></iconify-icon>
+</button>
+</div>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">仅保存在当前浏览器的本地存储中，不会上传到 NovelMatch 服务器。</p>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="modelName">模型名称</label>
+<input autocomplete="off" class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelName" placeholder="例如 gpt-4o-mini、claude-3-5-sonnet" spellcheck="false" type="text"/>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">填写服务商文档中的模型标识，需与你使用的接口兼容。</p>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="modelBaseUrl">模型网址</label>
+<input autocomplete="off" class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelBaseUrl" placeholder="例如 https://api.openai.com/v1" spellcheck="false" type="text"/>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">接口地址需以 http:// 或 https:// 开头，通常以 /v1 结尾。</p>
+</div>
+<div class="flex items-center justify-between border-t border-[#F0EEF5] bg-[#FCFCFE] px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10.5px] text-[#A09BAC]">
+<iconify-icon class="text-[12px]" icon="lucide:shield-check"></iconify-icon>
+          仅你可见
+        </span>
+<div class="flex items-center gap-2">
+<button class="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E2EC] bg-white px-4 text-[12px] font-medium text-[#605B73] transition hover:bg-[#F8F7FB]" data-close-model-modal="" type="button">取消</button>
+<button class="inline-flex h-9 items-center justify-center rounded-lg bg-[#5B4BD6] px-4 text-[12px] font-medium text-white transition hover:bg-[#4C3DC4]" id="saveModelBtn" type="button">保存配置</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+    const profileData = {
+      xuanhuan: {
+        name: '玄幻严选',
+        genre: '玄幻',
+        icon: 'lucide:sparkles',
+        iconClass: 'bg-[#F3F0FF] text-[#5B4BD6]',
+        analyzed: 12,
+        confidence: '高',
+        updated: '2026 年 11 月 2 日',
+        summary: '你偏爱设定严密、升级有代价的东方玄幻。比起一路平推的爽感，你更享受主角在规则内反复试探、靠判断与取舍走出困局的过程；群像与权谋是加分项，感情线克制反而更合口味。',
+        keywords: ['世界观缜密', '升级有代价', '群像权谋', '冷峻文风', '慢热铺垫', '克制感情线'],
+        likes: [
+          { t: '可推演的力量体系', d: '境界、资源与代价有清晰边界，不靠临时开挂解决冲突。' },
+          { t: '有分量的配角与博弈', d: '配角有自己的目标，权谋线能真正改变局势走向。' },
+          { t: '慢热但扎实的开局', d: '愿意用前二十章铺世界观，只要线索最终能收束。' }
+        ],
+        dislikes: [
+          { t: '无代价的连续越级', d: '战力体系形同虚设，主角靠情绪或血脉瞬间翻盘。' },
+          { t: '工具人式配角', d: '角色只为衬托主角存在，对话和动机高度功能化。' },
+          { t: '注水式日常', d: '主线停滞，用重复的打脸与闲聊拉长篇幅。' }
+        ],
+        result: {
+          title: '归墟剑主',
+          author: '沈砚舟 · 长宁文社 · 连载中',
+          genre: '玄幻',
+          tags: ['世界观流', '群像权谋', '慢热'],
+          score: 88,
+          verdict: '高度匹配，建议优先阅读',
+          verdictNote: '与「玄幻严选」的核心偏好有 4 项重合，节奏风险可控。',
+          reasons: [
+            { t: '力量体系有明确代价', d: '开篇即建立“借剑必还”的规则，后续升级都围绕代价展开，不靠临时开挂。' },
+            { t: '权谋线与主角成长互相咬合', d: '三方势力在第 8 章后陆续入场，配角的判断会实际改变局势。' },
+            { t: '文风冷峻克制', d: '叙述密度高、抒情少，符合你对“慢热但有信息量”的偏好。' }
+          ],
+          risks: [
+            { t: '前 12 章节奏偏慢', d: '世界观信息集中，若不习惯连续铺垫，可能在前三万字略感吃力。' },
+            { t: '感情线存在感较弱', d: '目前只有少量伏笔，期待强情感驱动的读者可能觉得不够。' }
+          ],
+          quote: '“剑修一途，借来的每一寸锋芒，都要用余生去还。”',
+          quoteSource: '第 3 章 · 借剑'
+        }
+      },
+      mystery: {
+        name: '悬疑推理偏好',
+        genre: '悬疑',
+        icon: 'lucide:search',
+        iconClass: 'bg-[#F1F5F9] text-[#5C6B80]',
+        analyzed: 8,
+        confidence: '中高',
+        updated: '2026 年 10 月 28 日',
+        summary: '你喜欢线索公平、动机可信的悬疑故事，偏爱冷调叙事和封闭空间里的群像博弈。反转必须能被前文支撑；比起纯粹的感官刺激，你更在意谜题揭开后对人性的解释是否成立。',
+        keywords: ['线索公平', '反转有铺垫', '冷调叙事', '封闭空间', '群像嫌疑', '社会议题'],
+        likes: [
+          { t: '线索可回看验证', d: '关键细节在揭晓前已经出现，重读时能发现合理伏笔。' },
+          { t: '动机比手法更重要', d: '凶手的选择有现实逻辑，不靠精神异常草率收尾。' },
+          { t: '有压迫感的场景调度', d: '雨夜、港口、旧公寓等空间参与叙事，氛围服务推理。' }
+        ],
+        dislikes: [
+          { t: '机械降神式反转', d: '结尾引入前文从未出现的证据或人物，破坏推理公平。' },
+          { t: '靠隐瞒信息制造悬念', d: '叙述者刻意不交代关键视角，让读者无法参与判断。' },
+          { t: '侦探全能化', d: '主角缺少试错过程，所有推断一次命中，紧张感被削弱。' }
+        ],
+        result: {
+          title: '雾港来信',
+          author: '程未眠 · 悬疑文库 · 已完结',
+          genre: '悬疑',
+          tags: ['本格推理', '双线叙事', '港城'],
+          score: 82,
+          verdict: '值得一读，建议先看前三章',
+          verdictNote: '推理结构扎实，但社会议题的比重可能高于你的平均耐受度。',
+          reasons: [
+            { t: '线索在明面上公平摆放', d: '两起旧案的关键物证都在前五章出现，没有隐藏视角。' },
+            { t: '双线叙事有明确交汇点', d: '1998 年与当下的时间线在第 11 章合拢，结构干净。' },
+            { t: '港城空间氛围到位', d: '潮湿、拥挤、旧码头的描写与案件推进紧密相关。' }
+          ],
+          risks: [
+            { t: '社会议题比重偏高', d: '中段用较多篇幅讨论港口改造与阶层问题，推理密度会短暂下降。' },
+            { t: '双线切换较频繁', d: '若偏好单线推进，前几章需要一点适应成本。' }
+          ],
+          quote: '“潮水退去时，港口会把所有没说完的话，重新送回岸上。”',
+          quoteSource: '第 7 章 · 退潮'
+        }
+      },
+      urban: {
+        name: '都市爽文观察',
+        genre: '都市',
+        icon: 'lucide:building-2',
+        iconClass: 'bg-[#F1F7F4] text-[#4C8069]',
+        analyzed: 5,
+        confidence: '建立中',
+        updated: '2026 年 10 月 19 日',
+        summary: '你偏好节奏明快、事业线清晰的都市故事，喜欢主角靠专业能力和判断力完成阶段性目标。现实质感与轻喜剧日常是加分项；金手指可以有，但最好别盖过人物自己的选择。',
+        keywords: ['快节奏', '事业线', '现实质感', '轻喜剧', '群像日常', '克制金手指'],
+        likes: [
+          { t: '阶段性目标清晰', d: '每 20 章左右有一次可验证的进展，阅读反馈直接。' },
+          { t: '专业细节可信', d: '行业流程、谈判和决策有基本逻辑，不靠空喊口号推进。' },
+          { t: '生活化群像', d: '同事、家人与合作伙伴有独立性格，日常段落不悬浮。' }
+        ],
+        dislikes: [
+          { t: '无脑打脸循环', d: '冲突靠反派降智制造，连续重复同一套爽点。' },
+          { t: '金手指无限扩张', d: '主角能力没有边界，事业线失去真实难度。' },
+          { t: '感情线喧宾夺主', d: '主线目标被长期搁置，关系拉扯占据过多篇幅。' }
+        ],
+        result: {
+          title: '重启 1998',
+          author: '周牧野 · 都市频道 · 连载中',
+          genre: '都市',
+          tags: ['年代创业', '轻喜剧', '群像'],
+          score: 74,
+          verdict: '部分契合，建议试读三章',
+          verdictNote: '事业线与节奏符合偏好，但金手指强度略高于你的历史记录。',
+          reasons: [
+            { t: '创业目标分阶段推进', d: '前 30 章完成从档口到批发线的第一次跃迁，节奏明快。' },
+            { t: '年代生活细节扎实', d: '票据、货源与街巷关系构成可信的现实底色。' },
+            { t: '配角功能不单一', d: '合伙人和家人都有自己的利益诉求，冲突不降智。' }
+          ],
+          risks: [
+            { t: '主角预判优势偏强', d: '多次依靠记忆中的趋势提前布局，可能削弱事业线的难度感。' },
+            { t: '轻喜剧桥段略密', d: '平均每两章一次喜剧冲突，严肃议题的纵深稍弱。' }
+          ],
+          quote: '“风口来的时候，先站稳的人，才有资格谈起飞。”',
+          quoteSource: '第 12 章 · 第一批货'
+        }
+      }
+    };
+
+    let currentProfileId = 'xuanhuan';
+    let toastTimer = null;
+    let evaluationToken = 0;
+
+    const els = {
+      profileTitle: document.getElementById('profileTitle'),
+      profileGenre: document.getElementById('profileGenre'),
+      profileIcon: document.getElementById('profileIcon'),
+      profileSummary: document.getElementById('profileSummary'),
+      updatedAt: document.getElementById('updatedAt'),
+      analyzedStat: document.getElementById('analyzedStat'),
+      confidenceStat: document.getElementById('confidenceStat'),
+      keywordStat: document.getElementById('keywordStat'),
+      keywordWrap: document.getElementById('keywordWrap'),
+      likesList: document.getElementById('likesList'),
+      dislikesList: document.getElementById('dislikesList'),
+      likeCount: document.getElementById('likeCount'),
+      dislikeCount: document.getElementById('dislikeCount'),
+      breadcrumbName: document.getElementById('breadcrumbName'),
+      evalProfileBadge: document.getElementById('evalProfileBadge'),
+      loadingProfileName: document.getElementById('loadingProfileName'),
+      profileCount: document.getElementById('profileCount'),
+      profileList: document.getElementById('profileList'),
+      resultWrap: document.getElementById('resultWrap'),
+      loadingCard: document.getElementById('loadingCard'),
+      novelUrl: document.getElementById('novelUrl'),
+      evalForm: document.getElementById('evalForm'),
+      evalBtn: document.getElementById('evalBtn'),
+      evalBtnText: document.getElementById('evalBtnText'),
+      evalSpinner: document.getElementById('evalSpinner'),
+      evalArrow: document.getElementById('evalArrow'),
+      evalError: document.getElementById('evalError'),
+      evalModelHint: document.getElementById('evalModelHint'),
+      resultModelName: document.getElementById('resultModelName'),
+      resultModelUrl: document.getElementById('resultModelUrl'),
+      editModal: document.getElementById('editModal'),
+      editName: document.getElementById('editName'),
+      editSummary: document.getElementById('editSummary'),
+      editKeywords: document.getElementById('editKeywords'),
+      modelModal: document.getElementById('modelModal'),
+      modelApiKey: document.getElementById('modelApiKey'),
+      modelName: document.getElementById('modelName'),
+      modelBaseUrl: document.getElementById('modelBaseUrl'),
+      toggleApiKey: document.getElementById('toggleApiKey'),
+      toggleApiKeyIcon: document.getElementById('toggleApiKeyIcon'),
+      toast: document.getElementById('toast'),
+      toastText: document.getElementById('toastText'),
+      toastIcon: document.getElementById('toastIcon')
+    };
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, function (char) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+      });
+    }
+
+    function showToast(message, icon) {
+      els.toastText.textContent = message;
+      els.toastIcon.setAttribute('icon', icon || 'lucide:check-circle-2');
+      els.toast.classList.remove('hidden');
+      if (toastTimer) {
+        clearTimeout(toastTimer);
+      }
+      toastTimer = setTimeout(function () {
+        els.toast.classList.add('hidden');
+      }, 2400);
+    }
+
+    const MODEL_CONFIG_KEY = 'novelmatch_model_config';
+
+    function readModelConfig() {
+      try {
+        const raw = localStorage.getItem(MODEL_CONFIG_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function isModelConfigured(config) {
+      return Boolean(config && config.apiKey && config.modelName && config.baseUrl);
+    }
+
+    function maskApiKey(apiKey) {
+      const value = String(apiKey || '');
+      return value.length > 8 ? value.slice(0, 3) + '••••' + value.slice(-4) : '••••';
+    }
+
+    function refreshModelStatus() {
+      const config = readModelConfig();
+      Array.from(document.querySelectorAll('[data-model-status]')).forEach(function (item) {
+        item.textContent = isModelConfigured(config) ? '已配置' : '未配置';
+      });
+      els.evalModelHint.classList.toggle('hidden', isModelConfigured(config));
+      els.evalModelHint.classList.toggle('flex', !isModelConfigured(config));
+      return config;
+    }
+
+    function applyModelInfo() {
+      const config = readModelConfig();
+      if (isModelConfigured(config)) {
+        els.resultModelName.textContent = config.modelName + ' · ' + maskApiKey(config.apiKey);
+        els.resultModelUrl.textContent = config.baseUrl;
+      } else {
+        els.resultModelName.textContent = '演示模型（未配置 API Key）';
+        els.resultModelUrl.textContent = '未填写模型网址，当前为演示结果';
+      }
+    }
+
+    function setApiKeyVisible(visible) {
+      els.modelApiKey.type = visible ? 'text' : 'password';
+      els.toggleApiKeyIcon.setAttribute('icon', visible ? 'lucide:eye-off' : 'lucide:eye');
+      els.toggleApiKey.setAttribute('aria-pressed', visible ? 'true' : 'false');
+      els.toggleApiKey.setAttribute('aria-label', visible ? '隐藏 API Key' : '显示 API Key');
+    }
+
+    function openModelModal() {
+      const config = readModelConfig();
+      els.modelApiKey.value = config.apiKey || '';
+      els.modelName.value = config.modelName || '';
+      els.modelBaseUrl.value = config.baseUrl || '';
+      setApiKeyVisible(false);
+      els.modelModal.classList.remove('hidden');
+      setTimeout(function () { els.modelApiKey.focus(); }, 30);
+    }
+
+    function closeModelModal() {
+      els.modelModal.classList.add('hidden');
+    }
+
+    Array.from(document.querySelectorAll('[data-open-model-settings]')).forEach(function (item) {
+      item.addEventListener('click', openModelModal);
+    });
+    Array.from(document.querySelectorAll('[data-close-model-modal]')).forEach(function (item) {
+      item.addEventListener('click', closeModelModal);
+    });
+    els.toggleApiKey.addEventListener('click', function () {
+      setApiKeyVisible(els.modelApiKey.type === 'password');
+    });
+
+    document.getElementById('saveModelBtn').addEventListener('click', function () {
+      const apiKey = els.modelApiKey.value.trim();
+      const modelName = els.modelName.value.trim();
+      const baseUrl = els.modelBaseUrl.value.trim();
+
+      if (!apiKey) {
+        showToast('请填写你的 API Key', 'lucide:circle-alert');
+        els.modelApiKey.focus();
+        return;
+      }
+      if (!modelName) {
+        showToast('请填写要调用的模型名称', 'lucide:circle-alert');
+        els.modelName.focus();
+        return;
+      }
+      if (!/^https?:\/\/\S+/i.test(baseUrl)) {
+        showToast('模型网址需以 http:// 或 https:// 开头', 'lucide:circle-alert');
+        els.modelBaseUrl.focus();
+        return;
+      }
+
+      try {
+        localStorage.setItem(MODEL_CONFIG_KEY, JSON.stringify({
+          apiKey: apiKey,
+          modelName: modelName,
+          baseUrl: baseUrl.replace(/\/+$/, ''),
+          updatedAt: new Date().toISOString()
+        }));
+      } catch (error) {
+        showToast('浏览器存储不可用，配置未能保存', 'lucide:circle-alert');
+        return;
+      }
+      refreshModelStatus();
+      applyModelInfo();
+      closeModelModal();
+      showToast('模型配置已保存', 'lucide:check-circle-2');
+    });
+
+    function renderKeywordChips(profile) {
+      els.keywordWrap.innerHTML = profile.keywords.map(function (keyword) {
+        return '<span class="inline-flex items-center rounded-lg border border-[#E6E1FA] bg-[#F7F5FF] px-2.5 py-1 text-[11px] font-medium text-[#5A4BC8]">' + escapeHtml(keyword) + '</span>';
+      }).join('');
+      els.keywordStat.textContent = String(profile.keywords.length);
+    }
+
+    function renderFeatureList(target, items, type) {
+      target.innerHTML = items.map(function (item) {
+        const isLike = type === 'like';
+        const icon = isLike ? 'lucide:check' : 'lucide:minus';
+        const iconClass = isLike ? 'bg-[#E9F8EF] text-[#1F9D62]' : 'bg-[#FFF0F2] text-[#C25867]';
+        return '' +
+          '<li class="flex items-start gap-3 rounded-xl border border-[#F0EDF8] bg-[#FCFBFE] p-3.5">' +
+            '<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ' + iconClass + '">' +
+              '<iconify-icon icon="' + icon + '" class="text-[11px]"></iconify-icon>' +
+            '</span>' +
+            '<span>' +
+              '<span class="block text-[12.5px] font-medium text-[#2B273B]">' + escapeHtml(item.t) + '</span>' +
+              '<span class="mt-1 block text-[11.5px] leading-5 text-[#7B768C]">' + escapeHtml(item.d) + '</span>' +
+            '</span>' +
+          '</li>';
+      }).join('');
+    }
+
+    function renderResult(profile) {
+      const result = profile.result;
+      document.getElementById('resultCoverText').textContent = result.title.slice(0, 2);
+      document.getElementById('resultTopBadge').textContent = '评估结果 · ' + result.genre;
+      document.getElementById('resultTitle').textContent = '《' + result.title + '》';
+      document.getElementById('resultAuthor').textContent = result.author;
+      document.getElementById('resultScore').textContent = String(result.score);
+      document.getElementById('scoreRing').style.background = 'conic-gradient(#5B4BD6 0% ' + result.score + '%, #ECE9F8 ' + result.score + '% 100%)';
+      document.getElementById('resultTags').innerHTML = result.tags.map(function (tag) {
+        return '<span class="rounded-md bg-white px-2 py-0.5 text-[10px] text-[#6F6983] ring-1 ring-[#ECE8F5]">' + escapeHtml(tag) + '</span>';
+      }).join('');
+      document.getElementById('resultVerdict').textContent = result.verdict;
+      document.getElementById('resultVerdictNote').textContent = result.verdictNote;
+      document.getElementById('resultReasons').innerHTML = result.reasons.map(function (item) {
+        return '<li class="flex items-start gap-2.5">' +
+          '<iconify-icon icon="lucide:check-circle-2" class="mt-0.5 shrink-0 text-[14px] text-[#34A874]"></iconify-icon>' +
+          '<div><p class="text-[12px] font-medium text-[#38334A]">' + escapeHtml(item.t) + '</p>' +
+          '<p class="mt-1 text-[11.5px] leading-5 text-[#817C91]">' + escapeHtml(item.d) + '</p></div></li>';
+      }).join('');
+      document.getElementById('resultRisks').innerHTML = result.risks.map(function (item) {
+        return '<li class="flex items-start gap-2.5">' +
+          '<iconify-icon icon="lucide:alert-circle" class="mt-0.5 shrink-0 text-[14px] text-[#D0833D]"></iconify-icon>' +
+          '<div><p class="text-[12px] font-medium text-[#38334A]">' + escapeHtml(item.t) + '</p>' +
+          '<p class="mt-1 text-[11.5px] leading-5 text-[#817C91]">' + escapeHtml(item.d) + '</p></div></li>';
+      }).join('');
+      document.getElementById('resultQuote').textContent = result.quote;
+      document.getElementById('resultQuoteSource').textContent = result.quoteSource;
+      const now = new Date();
+      const pad = function (value) { return String(value).padStart(2, '0'); };
+      document.getElementById('resultTime').textContent = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    }
+
+    function selectProfile(id, options) {
+      const profile = profileData[id];
+      if (!profile) {
+        return;
+      }
+      currentProfileId = id;
+      evaluationToken += 1;
+      setEvaluating(false);
+      els.profileTitle.textContent = profile.name;
+      els.profileGenre.textContent = profile.genre;
+      els.profileSummary.textContent = profile.summary;
+      els.updatedAt.textContent = profile.updated;
+      els.analyzedStat.textContent = String(profile.analyzed);
+      els.confidenceStat.textContent = profile.confidence;
+      els.breadcrumbName.textContent = profile.name;
+      els.evalProfileBadge.textContent = '基于「' + profile.name + '」';
+      els.loadingProfileName.textContent = profile.name;
+      els.profileIcon.setAttribute('icon', profile.icon);
+      els.likeCount.textContent = profile.likes.length + ' 项';
+      els.dislikeCount.textContent = profile.dislikes.length + ' 项';
+      renderKeywordChips(profile);
+      renderFeatureList(els.likesList, profile.likes, 'like');
+      renderFeatureList(els.dislikesList, profile.dislikes, 'dislike');
+
+      Array.from(document.querySelectorAll('.profile-item')).forEach(function (item) {
+        const isCurrent = item.getAttribute('data-profile') === id;
+        item.classList.toggle('is-active', isCurrent);
+        item.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
+      });
+
+      els.resultWrap.classList.add('hidden');
+      els.loadingCard.classList.add('hidden');
+      els.novelUrl.value = '';
+      els.evalError.classList.add('hidden');
+      document.getElementById('bookmarkText').textContent = '加入想读清单';
+
+      if (options && options.scroll) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    Array.from(document.querySelectorAll('.profile-item')).forEach(function (item) {
+      item.addEventListener('click', function () {
+        const id = item.getAttribute('data-profile');
+        if (id !== currentProfileId) {
+          selectProfile(id, { scroll: true });
+        }
+      });
+    });
+
+    document.getElementById('sampleBtn').addEventListener('click', function () {
+      els.novelUrl.value = 'https://www.qidian.com/book/1043210/';
+      els.novelUrl.focus();
+      els.novelUrl.classList.remove('border-[#E45B6B]', 'ring-1', 'ring-[#F4C7CE]');
+      els.evalError.classList.add('hidden');
+    });
+
+    els.novelUrl.addEventListener('input', function () {
+      els.novelUrl.classList.remove('border-[#E45B6B]', 'ring-1', 'ring-[#F4C7CE]');
+      els.evalError.classList.add('hidden');
+    });
+
+    function setEvaluating(isLoading) {
+      els.evalBtn.disabled = isLoading;
+      els.evalBtnText.textContent = isLoading ? '评估中' : '评估';
+      els.evalSpinner.classList.toggle('hidden', !isLoading);
+      els.evalArrow.classList.toggle('hidden', isLoading);
+    }
+
+    els.evalForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const url = els.novelUrl.value.trim();
+      if (!url) {
+        els.evalError.classList.remove('hidden');
+        els.novelUrl.classList.add('border-[#E45B6B]', 'ring-1', 'ring-[#F4C7CE]');
+        els.novelUrl.focus();
+        return;
+      }
+
+      const modelConfig = refreshModelStatus();
+      if (!isModelConfigured(modelConfig)) {
+        openModelModal();
+        showToast('评估前请先完成模型设置', 'lucide:cpu');
+        return;
+      }
+
+      els.evalError.classList.add('hidden');
+      els.resultWrap.classList.add('hidden');
+      els.loadingCard.classList.remove('hidden');
+      setEvaluating(true);
+      document.getElementById('bookmarkText').textContent = '加入想读清单';
+
+      const requestedProfileId = currentProfileId;
+      const requestToken = evaluationToken + 1;
+      evaluationToken = requestToken;
+
+      setTimeout(function () {
+        if (requestToken !== evaluationToken || requestedProfileId !== currentProfileId) {
+          setEvaluating(false);
+          return;
+        }
+        els.loadingCard.classList.add('hidden');
+        renderResult(profileData[currentProfileId]);
+        applyModelInfo();
+        els.resultWrap.classList.remove('hidden');
+        setEvaluating(false);
+        els.resultWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 1200);
+    });
+
+    document.getElementById('skipBtn').addEventListener('click', function () {
+      els.resultWrap.classList.add('hidden');
+      showToast('已记录“暂不考虑”，我们会减少相似推荐', 'lucide:thumbs-down');
+    });
+
+    document.getElementById('bookmarkBtn').addEventListener('click', function () {
+      document.getElementById('bookmarkText').textContent = '已加入想读';
+      showToast('已加入想读清单', 'lucide:bookmark-check');
+    });
+
+    function openEditModal() {
+      const profile = profileData[currentProfileId];
+      els.editName.value = profile.name;
+      els.editSummary.value = profile.summary;
+      els.editKeywords.value = profile.keywords.join('，');
+      els.editModal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      setTimeout(function () { els.editName.focus(); }, 30);
+    }
+
+    function closeEditModal() {
+      els.editModal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    document.getElementById('editBtn').addEventListener('click', openEditModal);
+    Array.from(document.querySelectorAll('[data-close-modal]')).forEach(function (item) {
+      item.addEventListener('click', closeEditModal);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !els.editModal.classList.contains('hidden')) {
+        closeEditModal();
+      }
+      if (event.key === 'Escape' && !els.modelModal.classList.contains('hidden')) {
+        closeModelModal();
+      }
+    });
+
+    document.getElementById('saveEditBtn').addEventListener('click', function () {
+      const profile = profileData[currentProfileId];
+      const newName = els.editName.value.trim();
+      const newSummary = els.editSummary.value.trim();
+      const newKeywords = els.editKeywords.value.split(/[，,]/).map(function (keyword) {
+        return keyword.trim();
+      }).filter(function (keyword) {
+        return keyword.length > 0;
+      }).slice(0, 8);
+
+      if (!newName) {
+        showToast('画像名称不能为空', 'lucide:circle-alert');
+        els.editName.focus();
+        return;
+      }
+      if (!newSummary) {
+        showToast('请填写一句品味总结', 'lucide:circle-alert');
+        els.editSummary.focus();
+        return;
+      }
+
+      profile.name = newName;
+      profile.summary = newSummary;
+      if (newKeywords.length > 0) {
+        profile.keywords = newKeywords;
+      }
+
+      const sideItem = document.querySelector('.profile-item[data-profile="' + currentProfileId + '"]');
+      if (sideItem) {
+        const nameEl = sideItem.querySelector('.profile-name');
+        if (nameEl) {
+          nameEl.textContent = profile.name;
+        }
+      }
+
+      selectProfile(currentProfileId);
+      closeEditModal();
+      showToast('画像已更新', 'lucide:check-circle-2');
+    });
+
+    function loadPendingProfile() {
+      let pending = null;
+      try {
+        const raw = localStorage.getItem('novelmatch_pending_profile');
+        if (raw) {
+          pending = JSON.parse(raw);
+        }
+      } catch (error) {
+        pending = null;
+      }
+      if (!pending || !pending.name || !pending.genre) {
+        return;
+      }
+
+      let hash = 0;
+      const source = pending.name + '|' + pending.genre;
+      for (let i = 0; i < source.length; i += 1) {
+        hash = ((hash << 5) - hash + source.charCodeAt(i)) | 0;
+      }
+      const customId = 'custom-' + Math.abs(hash).toString(36);
+
+      if (!profileData[customId]) {
+        profileData[customId] = {
+          name: pending.name,
+          genre: pending.genre,
+          icon: 'lucide:compass',
+          iconClass: 'bg-[#F4F1FF] text-[#5B4BD6]',
+          analyzed: 0,
+          confidence: '建立中',
+          updated: '刚刚创建',
+          summary: '这是一套以「' + pending.genre + '」为核心的阅读画像。目前记录的作品还不多，先补充 3–5 本喜欢的书，以及 1–2 本让你弃书的作品，NovelMatch 会据此提炼更准确的偏好特征。',
+          keywords: [pending.genre, '待补充偏好', '待记录作品'],
+          likes: [
+            { t: '尚未记录喜欢的特征', d: '在评估结果中标记“喜欢”，或在作品中补充笔记后会自动沉淀。' },
+            { t: '题材方向已确定', d: '后续推荐会优先围绕「' + pending.genre + '」展开。' }
+          ],
+          dislikes: [
+            { t: '尚未记录不喜欢的特征', d: '标记弃书原因后，这里会形成清晰的避雷清单。' }
+          ],
+          result: {
+            title: '长夜行舟',
+            author: '林间渡 · 样例文本',
+            genre: pending.genre,
+            tags: [pending.genre, '新书样本', '待验证'],
+            score: 76,
+            verdict: '初步契合，建议试读前三章',
+            verdictNote: '当前画像仍在建立中，补充更多作品记录后，判断会更准确。',
+            reasons: [
+              { t: '题材方向一致', d: '作品属于你选择的「' + pending.genre + '」方向，基础阅读兴趣有交集。' },
+              { t: '设定有明确主线', d: '开篇给出可追踪的目标，暂未出现明显偏离题材的支线。' },
+              { t: '文风克制，信息密度适中', d: '叙述以场景推进为主，抒情段落占比不高，接近你的初始偏好。' }
+            ],
+            risks: [
+              { t: '画像样本仍然偏少', d: '目前记录的作品不足 5 本，评估置信度有限。' },
+              { t: '节奏与人物塑造待验证', d: '前几章尚未展开完整冲突，建议试读后再决定是否加入书架。' }
+            ],
+            quote: '“夜航的船没有灯塔，只能靠掌舵的人记住星星的位置。”',
+            quoteSource: '第 1 章 · 夜航'
+          }
+        };
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'profile-item flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-[#F8F7FC]';
+        button.setAttribute('data-profile', customId);
+        button.setAttribute('aria-pressed', 'false');
+        button.innerHTML = '' +
+          '<span class="profile-icon mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F4F1FF] text-[#5B4BD6]">' +
+            '<iconify-icon icon="lucide:compass" class="text-[15px]"></iconify-icon>' +
+          '</span>' +
+          '<span class="min-w-0 flex-1">' +
+            '<span class="profile-name block truncate text-[12.5px] font-medium text-[#3A344C]">' + escapeHtml(pending.name) + '</span>' +
+            '<span class="profile-meta mt-1 block truncate text-[10.5px] text-[#9A95A9]">' + escapeHtml(pending.genre) + ' · 0 本已分析</span>' +
+          '</span>' +
+          '<span class="profile-dot mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-transparent"></span>';
+        button.addEventListener('click', function () {
+          if (customId !== currentProfileId) {
+            selectProfile(customId, { scroll: true });
+          }
+        });
+        els.profileList.appendChild(button);
+        els.profileCount.textContent = String(Object.keys(profileData).length);
+        selectProfile(customId, { scroll: true });
+        showToast('新画像已创建，开始补充你的阅读偏好', 'lucide:sparkles');
+      }
+    }
+
+    selectProfile('xuanhuan');
+    loadPendingProfile();
+    refreshModelStatus();
+  </script>
+</body>
+</html>

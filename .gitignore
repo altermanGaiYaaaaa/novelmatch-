@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Build outputs
+dist/
+dist-ssr/
+target/
+desktop/src-tauri/target/
+desktop/src-tauri/gen/
+*.tsbuildinfo
+
+# Local data, secrets and logs
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*
+*.local
+*.log
+logs/
+backups/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Installers and archives
+*.exe
+*.msi
+*.msix
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.zip
+
+# Temporary files
+*.tmp
+*.bak

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NovelMatch · 只读对味的小说</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+    html {
+      font-family: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color-scheme: light;
+    }
+    body {
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    ::selection {
+      background: #ddd6ff;
+      color: #2b2258;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#F6F6FA] text-[#1D1B2B]">
+<!-- 左侧固定导航 -->
+<aside class="fixed inset-y-0 left-0 z-30 flex w-[264px] flex-col border-r border-[#EAE9F2] bg-white">
+<a class="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-[#F0EFF6] px-6" href="home.html">
+<span class="flex h-9 w-9 items-center justify-center rounded-[11px] bg-gradient-to-br from-[#6C5CE7] to-[#8B7CF6] text-white shadow-[0_8px_18px_-8px_rgba(91,75,214,0.85)]">
+<iconify-icon class="text-[18px]" icon="lucide:book-open"></iconify-icon>
+</span>
+<span class="block">
+<span class="block text-[15px] font-semibold tracking-[-0.01em] text-[#211E31]">NovelMatch</span>
+<span class="mt-0.5 block text-[9px] font-medium uppercase tracking-[0.18em] text-[#A19DB0]">Taste Intelligence</span>
+</span>
+</a>
+<nav class="px-4 pt-6">
+<p class="px-3 pb-2 text-[10.5px] font-medium uppercase tracking-[0.14em] text-[#AAA6B8]">工作空间</p>
+<div class="space-y-1">
+<a class="flex h-10 items-center gap-3 rounded-xl bg-[#F3F1FF] px-3 text-[13.5px] font-medium text-[#5342D6]" href="home.html">
+<iconify-icon class="text-[17px]" icon="lucide:layout-dashboard"></iconify-icon>
+<span>首页</span>
+</a>
+<a class="flex h-10 items-center gap-3 rounded-xl px-3 text-[13.5px] text-[#5F5A72] transition hover:bg-[#F7F6FB] hover:text-[#2E2942]" href="workspace.html">
+<iconify-icon class="text-[17px]" icon="lucide:library"></iconify-icon>
+<span>我的画像</span>
+<span class="ml-auto rounded-md bg-[#F1EFF7] px-1.5 py-0.5 text-[10px] font-medium text-[#8B869E]">3</span>
+</a>
+<a class="flex h-10 items-center gap-3 rounded-xl px-3 text-[13.5px] text-[#5F5A72] transition hover:bg-[#F7F6FB] hover:text-[#2E2942]" href="create.html">
+<iconify-icon class="text-[17px]" icon="lucide:plus"></iconify-icon>
+<span>新建画像</span>
+</a>
+<button class="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-[13.5px] text-[#5F5A72] transition hover:bg-[#F7F6FB] hover:text-[#2E2942]" data-open-model-settings="" type="button">
+<iconify-icon class="text-[17px]" icon="lucide:cpu"></iconify-icon>
+<span>模型设置</span>
+<span class="ml-auto rounded-md bg-[#F1EFF7] px-1.5 py-0.5 text-[10px] font-medium text-[#8B869E]" data-model-status="">未配置</span>
+</button>
+</div>
+</nav>
+<div class="mx-4 mt-8 rounded-2xl border border-[#EDEBF6] bg-[#FAF9FF] p-4">
+<div class="flex items-center gap-2 text-[12px] font-medium text-[#4E446F]">
+<iconify-icon class="text-[14px] text-[#6C5CE7]" icon="lucide:sparkles"></iconify-icon>
+<span>本月评估额度</span>
+</div>
+<p class="mt-2 text-[12px] leading-5 text-[#7C7891]">还可评估 <span class="font-semibold text-[#5B4BD6]">18</span> 本小说</p>
+<div class="mt-3 h-1.5 overflow-hidden rounded-full bg-[#E7E4F5]">
+<div class="h-full w-[45%] rounded-full bg-[#6C5CE7]"></div>
+</div>
+<p class="mt-2 text-[10.5px] text-[#A29DB4]">每月 1 日重置</p>
+</div>
+<div class="mt-auto border-t border-[#F0EFF6] p-4">
+<div class="flex items-center gap-3 rounded-xl px-2 py-2">
+<span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#EDE9FF] text-[12px] font-semibold text-[#5B4BD6]">林</span>
+<div class="min-w-0">
+<p class="truncate text-[12.5px] font-medium text-[#2C283C]">林知微</p>
+<p class="text-[10.5px] text-[#9A96A9]">免费版 · 仅自己可见</p>
+</div>
+<button aria-label="模型设置" class="ml-auto text-[#A6A2B4] transition hover:text-[#5B4BD6]" data-open-model-settings="" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:settings"></iconify-icon>
+</button>
+</div>
+</div>
+</aside>
+<!-- 主区域 -->
+<div class="ml-[264px] flex min-h-screen flex-col">
+<header class="sticky top-0 z-20 flex h-[68px] shrink-0 items-center justify-between border-b border-[#EAE9F2] bg-white/85 px-10 backdrop-blur">
+<div class="flex items-center gap-2 text-[12.5px] text-[#8B879D]">
+<iconify-icon class="text-[14px]" icon="lucide:home"></iconify-icon>
+<span>首页</span>
+<span class="text-[#D6D3DE]">/</span>
+<span class="text-[#4C475E]">开始使用</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[12.5px] text-[#6C6880] transition hover:bg-[#F6F5FA] hover:text-[#3A3550]" type="button">
+<iconify-icon class="text-[15px]" icon="lucide:circle-help"></iconify-icon>
+          使用指南
+        </button>
+<button aria-label="通知" class="relative flex h-8 w-8 items-center justify-center rounded-lg text-[#6C6880] transition hover:bg-[#F6F5FA]" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:bell"></iconify-icon>
+<span class="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#6C5CE7] ring-2 ring-white"></span>
+</button>
+<span class="mx-1 h-5 w-px bg-[#ECEBF2]"></span>
+<span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#EDE9FF] text-[12px] font-semibold text-[#5B4BD6]">林</span>
+</div>
+</header>
+<main class="mx-auto w-full max-w-[1120px] flex-1 px-10 pb-16 pt-12">
+<section class="mx-auto max-w-[760px] text-center">
+<span class="inline-flex items-center gap-1.5 rounded-full border border-[#E7E2FA] bg-white px-3 py-1.5 text-[11.5px] font-medium text-[#6355B8] shadow-[0_4px_12px_-8px_rgba(91,75,214,0.6)]">
+<iconify-icon class="text-[13px] text-[#6C5CE7]" icon="lucide:sparkles"></iconify-icon>
+          NovelMatch · AI 个性化小说筛选
+        </span>
+<h1 class="mt-6 text-[38px] font-semibold leading-[1.28] tracking-[-0.025em] text-[#1C1A2A]">
+          只读对味的小说<span class="text-[#6C5CE7]">。</span>
+</h1>
+<p class="mx-auto mt-4 max-w-[590px] text-[14.5px] leading-7 text-[#6F6B82]">
+          从你喜欢与讨厌的小说中，提炼出独属于你的阅读品味，<br class="hidden sm:block"/>
+          再据此判断下一本是否值得打开。
+        </p>
+</section>
+<!-- 空状态主卡片 -->
+<section class="relative mt-10 overflow-hidden rounded-[24px] border border-[#E9E7F2] bg-white shadow-[0_28px_70px_-38px_rgba(44,36,96,0.38)]">
+<div class="pointer-events-none absolute -right-24 -top-28 h-[340px] w-[340px] rounded-full bg-[#F1EDFF] blur-[10px]"></div>
+<div class="pointer-events-none absolute -bottom-24 left-1/3 h-[220px] w-[220px] rounded-full bg-[#F7F5FF]"></div>
+<div class="relative grid items-center gap-8 p-10 lg:grid-cols-[1.02fr_0.98fr] lg:p-12">
+<div class="max-w-[500px]">
+<div class="flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#E6E0FB] bg-[#F6F3FF] text-[#5B4BD6]">
+<iconify-icon class="text-[21px]" icon="lucide:user-round-search"></iconify-icon>
+</div>
+<h2 class="mt-5 text-[22px] font-semibold leading-8 tracking-[-0.01em] text-[#232034]">
+              还没有建立你的第一套阅读画像
+            </h2>
+<p class="mt-3 text-[13.5px] leading-6 text-[#726E84]">
+              选一个你最常读的题材，告诉 NovelMatch 你偏爱什么。之后再补充喜欢和不喜欢的小说，画像会随着你的选择越来越准。
+            </p>
+<div class="mt-7 flex flex-wrap items-center gap-3">
+<a class="inline-flex h-11 items-center gap-2 rounded-xl bg-[#5B4BD6] px-5 text-[13.5px] font-medium text-white shadow-[0_12px_24px_-12px_rgba(91,75,214,0.95)] transition hover:bg-[#4C3DC4]" href="create.html">
+                创建我的画像
+                <iconify-icon class="text-[15px]" icon="lucide:arrow-right"></iconify-icon>
+</a>
+<a class="inline-flex h-11 items-center gap-1.5 rounded-xl border border-[#E7E4F0] bg-white px-4 text-[13px] font-medium text-[#5F5A72] transition hover:border-[#D6CFF6] hover:text-[#4E3FC7]" href="#how">
+                它是如何工作的
+              </a>
+</div>
+<p class="mt-5 flex items-center gap-1.5 text-[11.5px] text-[#9B97AC]">
+<iconify-icon class="text-[14px] text-[#8C87A0]" icon="lucide:shield-check"></iconify-icon>
+              画像只保存在你的账户中，可随时编辑或删除
+            </p>
+</div>
+<!-- 叠层卡片视觉 -->
+<div class="relative mx-auto h-[292px] w-full max-w-[380px] select-none">
+<div class="absolute left-2 top-7 h-[224px] w-[188px] -rotate-[8deg] rounded-2xl border border-[#E9E4FA] bg-[#F7F4FF] p-4 shadow-[0_16px_30px_-24px_rgba(58,44,120,0.5)]">
+<div class="flex items-center gap-2">
+<span class="h-5 w-5 rounded-md bg-[#E3DBFF]"></span>
+<span class="h-2 w-16 rounded-full bg-[#DCD4F5]"></span>
+</div>
+<div class="mt-5 space-y-2.5">
+<div class="h-2 w-full rounded-full bg-[#E8E1FA]"></div>
+<div class="h-2 w-4/5 rounded-full bg-[#EDE7FB]"></div>
+<div class="h-2 w-11/12 rounded-full bg-[#EDE7FB]"></div>
+</div>
+<div class="mt-5 flex flex-wrap gap-1.5">
+<span class="h-5 w-14 rounded-md bg-[#E6DEF9]"></span>
+<span class="h-5 w-11 rounded-md bg-[#EFEAFA]"></span>
+<span class="h-5 w-16 rounded-md bg-[#EFEAFA]"></span>
+</div>
+</div>
+<div class="absolute right-0 top-2 h-[214px] w-[180px] rotate-[7deg] rounded-2xl border border-[#E8E5F0] bg-white p-4 shadow-[0_18px_34px_-26px_rgba(48,38,100,0.55)]">
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-medium text-[#A09BAF]">阅读偏好</span>
+<iconify-icon class="text-[12px] text-[#B7ADEB]" icon="lucide:sparkles"></iconify-icon>
+</div>
+<div class="mt-4 space-y-3">
+<div>
+<div class="mb-1.5 flex justify-between text-[9px] text-[#8B86A0]"><span>世界观</span><span>92</span></div>
+<div class="h-1.5 rounded-full bg-[#F0EDF8]"><div class="h-full w-[92%] rounded-full bg-[#8172E8]"></div></div>
+</div>
+<div>
+<div class="mb-1.5 flex justify-between text-[9px] text-[#8B86A0]"><span>群像</span><span>84</span></div>
+<div class="h-1.5 rounded-full bg-[#F0EDF8]"><div class="h-full w-[84%] rounded-full bg-[#9A8DEE]"></div></div>
+</div>
+<div>
+<div class="mb-1.5 flex justify-between text-[9px] text-[#8B86A0]"><span>节奏</span><span>76</span></div>
+<div class="h-1.5 rounded-full bg-[#F0EDF8]"><div class="h-full w-[76%] rounded-full bg-[#B6ACF3]"></div></div>
+</div>
+</div>
+</div>
+<div class="absolute left-1/2 top-1/2 w-[252px] -translate-x-1/2 -translate-y-[42%] rounded-2xl border border-[#EBE8F4] bg-white p-5 shadow-[0_26px_46px_-22px_rgba(52,40,110,0.38)]">
+<div class="flex items-center justify-between">
+<span class="text-[10.5px] font-medium text-[#9A95AA]">画像匹配预览</span>
+<span class="rounded-md bg-[#EDF9F2] px-1.5 py-0.5 text-[9.5px] font-medium text-[#1E9C62]">高匹配</span>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F3F0FF] text-[#5B4BD6]">
+<iconify-icon class="text-[18px]" icon="lucide:book-open"></iconify-icon>
+</span>
+<div>
+<p class="text-[13px] font-semibold text-[#262236]">玄幻严选</p>
+<p class="mt-0.5 text-[10.5px] text-[#9590A6]">玄幻 · 已分析 12 本</p>
+</div>
+</div>
+<div class="mt-4 flex flex-wrap gap-1.5">
+<span class="rounded-md bg-[#F6F3FF] px-2 py-1 text-[9.5px] text-[#6557C4]">世界观缜密</span>
+<span class="rounded-md bg-[#F6F3FF] px-2 py-1 text-[9.5px] text-[#6557C4]">升级有代价</span>
+<span class="rounded-md bg-[#F6F3FF] px-2 py-1 text-[9.5px] text-[#6557C4]">群像权谋</span>
+</div>
+<div class="mt-4 flex items-center justify-between border-t border-[#F0EDF6] pt-3">
+<span class="text-[10.5px] text-[#9691A7]">下一本《归墟剑主》</span>
+<span class="text-[15px] font-semibold text-[#5B4BD6]">88<span class="ml-0.5 text-[9px] font-normal text-[#A09BB0]">%</span></span>
+</div>
+</div>
+<div class="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full border border-[#ECE9F5] bg-white px-3 py-1.5 text-[10.5px] text-[#6D6880] shadow-sm">
+<iconify-icon class="text-[13px] text-[#25A56A]" icon="lucide:check-circle-2"></iconify-icon>
+              基于你的真实偏好
+            </div>
+</div>
+</div>
+</section>
+<!-- 工作方式 -->
+<section class="mt-8 scroll-mt-24" id="how">
+<div class="mb-4 flex items-end justify-between px-1">
+<div>
+<h3 class="text-[15px] font-semibold text-[#2E2A40]">三步，把“好看”变成可判断的标准</h3>
+<p class="mt-1 text-[12px] text-[#8F8B9E]">不需要打分表，只需记录真实的阅读感受。</p>
+</div>
+<a class="hidden items-center gap-1 text-[12px] font-medium text-[#6C5CE7] transition hover:text-[#4C3DC4] sm:flex" href="workspace.html">
+            查看示例画像
+            <iconify-icon class="text-[13px]" icon="lucide:arrow-up-right"></iconify-icon>
+</a>
+</div>
+<div class="grid gap-4 md:grid-cols-3">
+<div class="rounded-2xl border border-[#EBE9F2] bg-white p-5 shadow-[0_10px_24px_-24px_rgba(44,36,96,0.5)]">
+<div class="flex items-center justify-between">
+<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F4F1FF] text-[#5B4BD6]">
+<iconify-icon class="text-[17px]" icon="lucide:pencil-line"></iconify-icon>
+</span>
+<span class="text-[11px] font-medium tracking-[0.1em] text-[#D3CEDF]">01</span>
+</div>
+<h4 class="mt-4 text-[13.5px] font-semibold text-[#2B273C]">记录喜欢与不喜欢</h4>
+<p class="mt-1.5 text-[12px] leading-5 text-[#7E798F]">添加读过的小说，标记打动你的段落，也标记让你弃书的瞬间。</p>
+</div>
+<div class="rounded-2xl border border-[#EBE9F2] bg-white p-5 shadow-[0_10px_24px_-24px_rgba(44,36,96,0.5)]">
+<div class="flex items-center justify-between">
+<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F4F1FF] text-[#5B4BD6]">
+<iconify-icon class="text-[17px]" icon="lucide:scan-text"></iconify-icon>
+</span>
+<span class="text-[11px] font-medium tracking-[0.1em] text-[#D3CEDF]">02</span>
+</div>
+<h4 class="mt-4 text-[13.5px] font-semibold text-[#2B273C]">提炼个人品味画像</h4>
+<p class="mt-1.5 text-[12px] leading-5 text-[#7E798F]">AI 归纳你的偏好关键词、喜欢和不喜欢的特征，形成可解释的阅读画像。</p>
+</div>
+<div class="rounded-2xl border border-[#EBE9F2] bg-white p-5 shadow-[0_10px_24px_-24px_rgba(44,36,96,0.5)]">
+<div class="flex items-center justify-between">
+<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F4F1FF] text-[#5B4BD6]">
+<iconify-icon class="text-[17px]" icon="lucide:target"></iconify-icon>
+</span>
+<span class="text-[11px] font-medium tracking-[0.1em] text-[#D3CEDF]">03</span>
+</div>
+<h4 class="mt-4 text-[13.5px] font-semibold text-[#2B273C]">评估下一本书</h4>
+<p class="mt-1.5 text-[12px] leading-5 text-[#7E798F]">粘贴小说链接，得到匹配度、推荐理由和可能踩中的雷点。</p>
+</div>
+</div>
+</section>
+</main>
+<footer class="border-t border-[#ECEBF2] px-10 py-5">
+<div class="mx-auto flex max-w-[1120px] items-center justify-between text-[11px] text-[#A09CAC]">
+<span>NovelMatch · 让每一次开书更有把握</span>
+<span class="flex items-center gap-4">
+<button class="transition hover:text-[#6C5CE7]" type="button">隐私说明</button>
+<button class="transition hover:text-[#6C5CE7]" type="button">帮助中心</button>
+</span>
+</div>
+</footer>
+</div>
+<!-- 模型设置弹窗 -->
+<div class="fixed inset-0 z-50 hidden" id="modelModal">
+<div class="absolute inset-0 bg-[#1A1630]/40 backdrop-blur-[2px]" data-close-model-modal=""></div>
+<div class="relative mx-auto mt-[9vh] w-[calc(100%-40px)] max-w-[520px] overflow-hidden rounded-2xl border border-white/60 bg-white shadow-[0_30px_80px_-20px_rgba(25,18,60,0.45)]">
+<div class="flex items-start justify-between border-b border-[#F0EEF5] px-6 py-4">
+<div>
+<h2 class="text-[15px] font-semibold text-[#262236]">模型设置</h2>
+<p class="mt-1 text-[11px] text-[#9691A6]">填入你自己的 API Key，评估会通过你指定的模型完成。</p>
+</div>
+<button aria-label="关闭" class="flex h-7 w-7 items-center justify-center rounded-lg text-[#9A95A9] transition hover:bg-[#F5F3FA] hover:text-[#4E3FC7]" data-close-model-modal="" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:x"></iconify-icon>
+</button>
+</div>
+<div class="max-h-[62vh] overflow-y-auto px-6 py-5">
+<label class="text-[12px] font-medium text-[#3C374E]" for="modelApiKey">API Key</label>
+<div class="relative mt-2">
+<input autocomplete="off" class="h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] pl-3.5 pr-11 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelApiKey" placeholder="sk-..." spellcheck="false" type="password"/>
+<button aria-label="显示 API Key" aria-pressed="false" class="absolute right-1.5 top-1/2 flex h-7 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-[#A6A2B4] transition hover:bg-[#F5F3FA] hover:text-[#5B4BD6]" id="toggleApiKey" type="button">
+<iconify-icon class="text-[15px]" icon="lucide:eye" id="toggleApiKeyIcon"></iconify-icon>
+</button>
+</div>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">仅保存在当前浏览器的本地存储中，不会上传到 NovelMatch 服务器。</p>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="modelName">模型名称</label>
+<input autocomplete="off" class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelName" placeholder="例如 gpt-4o-mini、claude-3-5-sonnet" spellcheck="false" type="text"/>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">填写服务商文档中的模型标识，需与你使用的接口兼容。</p>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="modelBaseUrl">模型网址</label>
+<input autocomplete="off" class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelBaseUrl" placeholder="例如 https://api.openai.com/v1" spellcheck="false" type="text"/>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">接口地址需以 http:// 或 https:// 开头，通常以 /v1 结尾。</p>
+</div>
+<div class="flex items-center justify-between border-t border-[#F0EEF5] bg-[#FCFCFE] px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10.5px] text-[#A09BAC]">
+<iconify-icon class="text-[12px]" icon="lucide:shield-check"></iconify-icon>
+          仅你可见
+        </span>
+<div class="flex items-center gap-2">
+<button class="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E2EC] bg-white px-4 text-[12px] font-medium text-[#605B73] transition hover:bg-[#F8F7FB]" data-close-model-modal="" type="button">取消</button>
+<button class="inline-flex h-9 items-center justify-center rounded-lg bg-[#5B4BD6] px-4 text-[12px] font-medium text-white transition hover:bg-[#4C3DC4]" id="saveModelBtn" type="button">保存配置</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 轻提示 -->
+<div class="pointer-events-none fixed bottom-8 left-1/2 z-[60] hidden -translate-x-1/2" id="toast">
+<div class="flex items-center gap-2 rounded-xl bg-[#231D3B] px-4 py-2.5 text-[12.5px] text-white shadow-[0_18px_40px_-18px_rgba(20,14,50,0.8)]">
+<iconify-icon class="text-[14px] text-[#A99BF5]" icon="lucide:check-circle-2" id="toastIcon"></iconify-icon>
+<span id="toastText">配置已保存</span>
+</div>
+</div>
+<script>
+    (function () {
+      const STORAGE_KEY = 'novelmatch_model_config';
+      const modal = document.getElementById('modelModal');
+      const apiKeyInput = document.getElementById('modelApiKey');
+      const modelNameInput = document.getElementById('modelName');
+      const baseUrlInput = document.getElementById('modelBaseUrl');
+      const toggleBtn = document.getElementById('toggleApiKey');
+      const toggleIcon = document.getElementById('toggleApiKeyIcon');
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toastText');
+      const toastIcon = document.getElementById('toastIcon');
+      let toastTimer = null;
+
+      function readConfig() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function isConfigured(config) {
+        return Boolean(config && config.apiKey && config.modelName && config.baseUrl);
+      }
+
+      function refreshStatus() {
+        const ready = isConfigured(readConfig());
+        Array.from(document.querySelectorAll('[data-model-status]')).forEach(function (item) {
+          item.textContent = ready ? '已配置' : '未配置';
+        });
+      }
+
+      function showToast(message, icon) {
+        toastText.textContent = message;
+        toastIcon.setAttribute('icon', icon || 'lucide:check-circle-2');
+        toast.classList.remove('hidden');
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+        toastTimer = setTimeout(function () {
+          toast.classList.add('hidden');
+        }, 2400);
+      }
+
+      function setVisible(visible) {
+        apiKeyInput.type = visible ? 'text' : 'password';
+        toggleIcon.setAttribute('icon', visible ? 'lucide:eye-off' : 'lucide:eye');
+        toggleBtn.setAttribute('aria-pressed', visible ? 'true' : 'false');
+        toggleBtn.setAttribute('aria-label', visible ? '隐藏 API Key' : '显示 API Key');
+      }
+
+      function openModal() {
+        const config = readConfig();
+        apiKeyInput.value = config.apiKey || '';
+        modelNameInput.value = config.modelName || '';
+        baseUrlInput.value = config.baseUrl || '';
+        setVisible(false);
+        modal.classList.remove('hidden');
+      }
+
+      function closeModal() {
+        modal.classList.add('hidden');
+      }
+
+      Array.from(document.querySelectorAll('[data-open-model-settings]')).forEach(function (item) {
+        item.addEventListener('click', openModal);
+      });
+      Array.from(document.querySelectorAll('[data-close-model-modal]')).forEach(function (item) {
+        item.addEventListener('click', closeModal);
+      });
+      toggleBtn.addEventListener('click', function () {
+        setVisible(apiKeyInput.type === 'password');
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+          closeModal();
+        }
+      });
+
+      document.getElementById('saveModelBtn').addEventListener('click', function () {
+        const apiKey = apiKeyInput.value.trim();
+        const modelName = modelNameInput.value.trim();
+        const baseUrl = baseUrlInput.value.trim();
+
+        if (!apiKey) {
+          showToast('请填写你的 API Key', 'lucide:circle-alert');
+          apiKeyInput.focus();
+          return;
+        }
+        if (!modelName) {
+          showToast('请填写要调用的模型名称', 'lucide:circle-alert');
+          modelNameInput.focus();
+          return;
+        }
+        if (!/^https?:\/\/\S+/i.test(baseUrl)) {
+          showToast('模型网址需以 http:// 或 https:// 开头', 'lucide:circle-alert');
+          baseUrlInput.focus();
+          return;
+        }
+
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            apiKey: apiKey,
+            modelName: modelName,
+            baseUrl: baseUrl.replace(/\/+$/, ''),
+            updatedAt: new Date().toISOString()
+          }));
+        } catch (error) {
+          showToast('浏览器存储不可用，配置未能保存', 'lucide:circle-alert');
+          return;
+        }
+        refreshStatus();
+        closeModal();
+        showToast('模型配置已保存', 'lucide:check-circle-2');
+      });
+
+      refreshStatus();
+    })();
+  </script>
+</body>
+</html>

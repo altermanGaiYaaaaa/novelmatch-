@@ -1,0 +1,19 @@
+请阅读以下小说前若干章样本，从七个维度提取具体、可比较的内容特征。
+
+维度键固定为：
+writing（文笔）、plot（剧情）、character（人物塑造）、worldbuilding（世界观）、pacing（节奏）、creativity（创意）、payoff（爽点）。
+
+要求：
+1. 每个维度的 features 提供 3–6 个具体特征短语，避免“好看”“精彩”“一般”等空泛判断。
+2. 每个维度的 description 用 1–2 句说明该维度表现，不超过 120 字。
+3. tags 提供 3–5 个题材或风格标签。
+4. quote 选一句能代表文风的原文，quoteSource 写成“第 X 章 · 章节名”；没有合适原文则留空字符串。
+5. 只依据提供的文本，不假设后续情节。
+
+输出 JSON，键名必须完全一致：
+{"title":"","author":"","genre":"","tags":[],"dimensions":{"writing":{"features":[],"description":""},"plot":{"features":[],"description":""},"character":{"features":[],"description":""},"worldbuilding":{"features":[],"description":""},"pacing":{"features":[],"description":""},"creativity":{"features":[],"description":""},"payoff":{"features":[],"description":""}},"quote":"","quoteSource":""}
+
+小说名：{{TITLE}}
+作者：{{AUTHOR}}
+正文样本：
+{{TEXT}}

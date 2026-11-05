@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>新建画像 · NovelMatch</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<style>
+    html {
+      font-family: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color-scheme: light;
+    }
+    body {
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    ::selection {
+      background: #ddd6ff;
+      color: #2b2258;
+    }
+    .genre-card.is-selected {
+      border-color: #6C5CE7;
+      background: #F7F4FF;
+      box-shadow: inset 0 0 0 1px #6C5CE7, 0 10px 20px -18px rgba(78, 63, 199, 0.65);
+    }
+    .genre-card.is-selected .genre-label {
+      color: #4E3FC7;
+    }
+    .genre-card.is-selected .genre-icon {
+      background: #E9E3FF;
+      color: #5B4BD6;
+    }
+    .genre-card.is-selected .genre-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#F6F6FA] text-[#1D1B2B]">
+<!-- 左侧固定导航 -->
+<aside class="fixed inset-y-0 left-0 z-30 flex w-[264px] flex-col border-r border-[#EAE9F2] bg-white">
+<a class="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-[#F0EFF6] px-6" href="home.html">
+<span class="flex h-9 w-9 items-center justify-center rounded-[11px] bg-gradient-to-br from-[#6C5CE7] to-[#8B7CF6] text-white shadow-[0_8px_18px_-8px_rgba(91,75,214,0.85)]">
+<iconify-icon class="text-[18px]" icon="lucide:book-open"></iconify-icon>
+</span>
+<span class="block">
+<span class="block text-[15px] font-semibold tracking-[-0.01em] text-[#211E31]">NovelMatch</span>
+<span class="mt-0.5 block text-[9px] font-medium uppercase tracking-[0.18em] text-[#A19DB0]">Taste Intelligence</span>
+</span>
+</a>
+<nav class="px-4 pt-6">
+<p class="px-3 pb-2 text-[10.5px] font-medium uppercase tracking-[0.14em] text-[#AAA6B8]">工作空间</p>
+<div class="space-y-1">
+<a class="flex h-10 items-center gap-3 rounded-xl px-3 text-[13.5px] text-[#5F5A72] transition hover:bg-[#F7F6FB] hover:text-[#2E2942]" href="home.html">
+<iconify-icon class="text-[17px]" icon="lucide:layout-dashboard"></iconify-icon>
+<span>首页</span>
+</a>
+<a class="flex h-10 items-center gap-3 rounded-xl px-3 text-[13.5px] text-[#5F5A72] transition hover:bg-[#F7F6FB] hover:text-[#2E2942]" href="workspace.html">
+<iconify-icon class="text-[17px]" icon="lucide:library"></iconify-icon>
+<span>我的画像</span>
+<span class="ml-auto rounded-md bg-[#F1EFF7] px-1.5 py-0.5 text-[10px] font-medium text-[#8B869E]">3</span>
+</a>
+<a class="flex h-10 items-center gap-3 rounded-xl bg-[#F3F1FF] px-3 text-[13.5px] font-medium text-[#5342D6]" href="create.html">
+<iconify-icon class="text-[17px]" icon="lucide:plus"></iconify-icon>
+<span>新建画像</span>
+<span class="ml-auto h-1.5 w-1.5 rounded-full bg-[#6C5CE7]"></span>
+</a>
+<button class="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-[13.5px] text-[#5F5A72] transition hover:bg-[#F7F6FB] hover:text-[#2E2942]" data-open-model-settings="" type="button">
+<iconify-icon class="text-[17px]" icon="lucide:cpu"></iconify-icon>
+<span>模型设置</span>
+<span class="ml-auto rounded-md bg-[#F1EFF7] px-1.5 py-0.5 text-[10px] font-medium text-[#8B869E]" data-model-status="">未配置</span>
+</button>
+</div>
+</nav>
+<div class="mx-4 mt-8 rounded-2xl border border-[#EDEBF6] bg-[#FAF9FF] p-4">
+<div class="flex items-center gap-2 text-[12px] font-medium text-[#4E446F]">
+<iconify-icon class="text-[14px] text-[#6C5CE7]" icon="lucide:layers"></iconify-icon>
+<span>画像可多套并存</span>
+</div>
+<p class="mt-2 text-[12px] leading-5 text-[#7C7891]">按题材或阅读阶段分别建立画像，评估时切换使用即可。</p>
+</div>
+<div class="mt-auto border-t border-[#F0EFF6] p-4">
+<div class="flex items-center gap-3 rounded-xl px-2 py-2">
+<span class="flex h-8 w-8 items-center justify-center rounded-full bg-[#EDE9FF] text-[12px] font-semibold text-[#5B4BD6]">林</span>
+<div class="min-w-0">
+<p class="truncate text-[12.5px] font-medium text-[#2C283C]">林知微</p>
+<p class="text-[10.5px] text-[#9A96A9]">免费版 · 仅自己可见</p>
+</div>
+<button aria-label="模型设置" class="ml-auto text-[#A6A2B4] transition hover:text-[#5B4BD6]" data-open-model-settings="" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:settings"></iconify-icon>
+</button>
+</div>
+</div>
+</aside>
+<div class="ml-[264px] flex min-h-screen flex-col">
+<header class="sticky top-0 z-20 flex h-[68px] shrink-0 items-center justify-between border-b border-[#EAE9F2] bg-white/85 px-10 backdrop-blur">
+<div class="flex items-center gap-2 text-[12.5px] text-[#8B879D]">
+<a class="transition hover:text-[#5B4BD6]" href="workspace.html">我的画像</a>
+<span class="text-[#D6D3DE]">/</span>
+<span class="text-[#4C475E]">新建画像</span>
+</div>
+<a class="flex items-center gap-1.5 text-[12.5px] text-[#7C7790] transition hover:text-[#5B4BD6]" href="workspace.html">
+<iconify-icon class="text-[14px]" icon="lucide:arrow-left"></iconify-icon>
+        返回工作台
+      </a>
+</header>
+<main class="mx-auto w-full max-w-[1160px] flex-1 px-10 pb-16 pt-9">
+<div class="flex items-end justify-between gap-6">
+<div>
+<div class="flex items-center gap-2">
+<span class="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#F1EDFF] text-[#5B4BD6]">
+<iconify-icon class="text-[16px]" icon="lucide:user-round-plus"></iconify-icon>
+</span>
+<h1 class="text-[24px] font-semibold tracking-[-0.02em] text-[#1F1C30]">新建阅读品味画像</h1>
+</div>
+<p class="mt-2.5 text-[13px] leading-6 text-[#7A758C]">先告诉 NovelMatch 你怎么称呼这套画像、最常读什么，之后可以继续补充作品与偏好细节。</p>
+</div>
+<span class="hidden items-center gap-1.5 rounded-lg border border-[#E9E6F3] bg-white px-3 py-1.5 text-[11px] text-[#8A859C] sm:flex">
+<iconify-icon class="text-[13px] text-[#8D7FE0]" icon="lucide:shield-check"></iconify-icon>
+          画像默认仅自己可见
+        </span>
+</div>
+<div class="mt-7 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
+<!-- 表单卡片 -->
+<section class="overflow-hidden rounded-2xl border border-[#E8E6F1] bg-white shadow-[0_18px_44px_-34px_rgba(44,36,96,0.45)]">
+<div class="p-7 lg:p-8">
+<div>
+<div class="flex items-center justify-between">
+<label class="text-[13.5px] font-semibold text-[#2B273C]" for="profileName">
+                  画像名称
+                  <span class="ml-1 text-[11px] font-normal text-[#B04A5D]">必填</span>
+</label>
+<span class="text-[11px] tabular-nums text-[#A29DAF]"><span id="nameCount">0</span> / 20</span>
+</div>
+<input autocomplete="off" class="mt-2.5 h-11 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[13.5px] text-[#2A263B] outline-none transition placeholder:text-[#ABA6B8] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="profileName" maxlength="20" placeholder="例如：偏爱冷峻权谋的玄幻读者" type="text"/>
+<p class="mt-2 text-[11.5px] leading-5 text-[#918CA2]">一个容易辨认的名字，方便在工作台快速切换不同阅读口味。</p>
+</div>
+<div class="my-7 h-px bg-[#F0EEF5]"></div>
+<div>
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-[13.5px] font-semibold text-[#2B273C]">偏好题材</span>
+<span class="rounded-md bg-[#F3F0FF] px-1.5 py-0.5 text-[10px] font-medium text-[#6557C4]">单选</span>
+</div>
+<span class="text-[11.5px] text-[#9A96A8]">选择最接近你近期口味的一个题材</span>
+</div>
+<p class="mt-2 text-[11.5px] leading-5 text-[#918CA2]">题材只用于确定匹配方向的起点，创建后仍可修改。</p>
+<div class="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5" id="genreGrid">
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="玄幻" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:sparkles"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">玄幻</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">东方幻想 · 升级体系</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="仙侠" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:mountain"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">仙侠</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">修真问道 · 宗门江湖</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="都市" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:building-2"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">都市</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">现实背景 · 都市生活</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="历史" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:scroll-text"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">历史</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">朝代风云 · 权谋争锋</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="科幻" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:rocket"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">科幻</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">未来科技 · 星际想象</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="悬疑" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:search"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">悬疑</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">推理探案 · 谜题反转</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="言情" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:heart"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">言情</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">情感关系 · 人物成长</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="武侠" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:swords"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">武侠</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">江湖侠义 · 刀光剑影</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="游戏竞技" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:gamepad-2"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">游戏竞技</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">虚拟世界 · 战队成长</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+<button aria-pressed="false" class="genre-card relative flex h-[96px] flex-col justify-between rounded-xl border border-[#E8E6F0] bg-white p-3.5 text-left transition hover:border-[#CFC7F2] hover:bg-[#FCFBFF]" data-genre="其他" type="button">
+<span class="genre-icon flex h-7 w-7 items-center justify-center rounded-lg bg-[#F4F2FC] text-[#6C5CE7] transition">
+<iconify-icon class="text-[15px]" icon="lucide:ellipsis"></iconify-icon>
+</span>
+<span class="block">
+<span class="genre-label block text-[12.5px] font-medium text-[#332E46]">其他</span>
+<span class="mt-0.5 block truncate text-[9.5px] text-[#9A95A9]">尚未归类的偏好</span>
+</span>
+<span class="genre-check absolute right-2.5 top-2.5 flex h-4 w-4 scale-75 items-center justify-center rounded-full bg-[#6C5CE7] text-white opacity-0 transition">
+<iconify-icon class="text-[10px]" icon="lucide:check"></iconify-icon>
+</span>
+</button>
+</div>
+</div>
+<div class="mt-6 hidden items-start gap-2 rounded-xl border border-[#F5DCE0] bg-[#FFF7F8] px-3.5 py-2.5 text-[12px] leading-5 text-[#B04A5D]" id="formError">
+<iconify-icon class="mt-0.5 shrink-0 text-[14px]" icon="lucide:circle-alert"></iconify-icon>
+<span id="formErrorText">请填写画像名称，并选择一个偏好题材。</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#F0EEF5] bg-[#FCFCFE] px-7 py-5 lg:px-8">
+<p class="flex items-center gap-1.5 text-[11.5px] text-[#9691A6]">
+<iconify-icon class="text-[13px]" icon="lucide:info"></iconify-icon>
+              创建后仍可继续编辑题材与偏好关键词
+            </p>
+<div class="flex items-center gap-2.5">
+<a class="inline-flex h-10 items-center justify-center rounded-xl border border-[#E5E2EC] bg-white px-4 text-[13px] font-medium text-[#605B73] transition hover:border-[#D8D3E5] hover:bg-[#FAF9FC]" href="home.html">
+                取消
+              </a>
+<a class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#5B4BD6] px-5 text-[13px] font-medium text-white shadow-[0_10px_22px_-12px_rgba(91,75,214,0.95)] transition hover:bg-[#4C3DC4]" href="workspace.html" id="createBtn">
+                创建画像
+                <iconify-icon class="text-[14px]" icon="lucide:arrow-right"></iconify-icon>
+</a>
+</div>
+</div>
+</section>
+<!-- 侧栏提示 -->
+<aside class="space-y-4">
+<div class="rounded-2xl border border-[#E8E6F1] bg-white p-5 shadow-[0_14px_32px_-30px_rgba(44,36,96,0.45)]">
+<div class="flex items-center gap-2">
+<span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[#F3F0FF] text-[#5B4BD6]">
+<iconify-icon class="text-[14px]" icon="lucide:wand-sparkles"></iconify-icon>
+</span>
+<h2 class="text-[13px] font-semibold text-[#2C283C]">创建后你会得到</h2>
+</div>
+<ul class="mt-4 space-y-4">
+<li class="flex gap-3">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F4F1FF] text-[10px] font-semibold text-[#6557C4]">1</span>
+<div>
+<p class="text-[12px] font-medium text-[#3A344C]">一套专属品味画像</p>
+<p class="mt-1 text-[11px] leading-5 text-[#8D889C]">包含偏好关键词、喜欢的特征和需要避开的雷点。</p>
+</div>
+</li>
+<li class="flex gap-3">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F4F1FF] text-[10px] font-semibold text-[#6557C4]">2</span>
+<div>
+<p class="text-[12px] font-medium text-[#3A344C]">小说匹配评估能力</p>
+<p class="mt-1 text-[11px] leading-5 text-[#8D889C]">粘贴链接即可获得匹配度、推荐理由与风险提示。</p>
+</div>
+</li>
+<li class="flex gap-3">
+<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#F4F1FF] text-[10px] font-semibold text-[#6557C4]">3</span>
+<div>
+<p class="text-[12px] font-medium text-[#3A344C]">持续校准的阅读偏好</p>
+<p class="mt-1 text-[11px] leading-5 text-[#8D889C]">每次标记喜欢或不喜欢，都会让判断更接近你的真实口味。</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="rounded-2xl border border-[#EEEAF8] bg-[#FAF9FF] p-5">
+<div class="flex items-center gap-2 text-[12px] font-medium text-[#534A74]">
+<iconify-icon class="text-[14px] text-[#8D7FE0]" icon="lucide:lightbulb"></iconify-icon>
+              填写建议
+            </div>
+<p class="mt-3 text-[11.5px] leading-6 text-[#807B92]">选择最近三个月最常读的题材，匹配会更聚焦。名称越具体，之后切换画像时越容易辨认。</p>
+</div>
+<div class="flex items-center gap-2 px-1 text-[11px] text-[#A09CAC]">
+<iconify-icon class="text-[13px]" icon="lucide:clock-3"></iconify-icon>
+            创建过程约需 1 分钟
+          </div>
+</aside>
+</div>
+</main>
+</div>
+<script>
+    const nameInput = document.getElementById('profileName');
+    const nameCount = document.getElementById('nameCount');
+    const genreButtons = Array.from(document.querySelectorAll('.genre-card'));
+    const createBtn = document.getElementById('createBtn');
+    const formError = document.getElementById('formError');
+    const formErrorText = document.getElementById('formErrorText');
+    let selectedGenre = '';
+
+    nameInput.addEventListener('input', function () {
+      nameCount.textContent = String(nameInput.value.length);
+      nameInput.classList.remove('border-[#E45B6B]', 'ring-1', 'ring-[#F4C7CE]');
+      hideError();
+    });
+
+    genreButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        selectedGenre = button.getAttribute('data-genre');
+        genreButtons.forEach(function (item) {
+          const isCurrent = item === button;
+          item.classList.toggle('is-selected', isCurrent);
+          item.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
+        });
+        hideError();
+      });
+    });
+
+    function hideError() {
+      if (!formError.classList.contains('hidden')) {
+        formError.classList.add('hidden');
+        formError.classList.remove('flex');
+      }
+    }
+
+    function showError(message) {
+      formErrorText.textContent = message;
+      formError.classList.remove('hidden');
+      formError.classList.add('flex');
+    }
+
+    createBtn.addEventListener('click', function (event) {
+      const name = nameInput.value.trim();
+      if (!name && !selectedGenre) {
+        event.preventDefault();
+        showError('请先填写画像名称，并选择一个偏好题材。');
+        nameInput.focus();
+        nameInput.classList.add('border-[#E45B6B]', 'ring-1', 'ring-[#F4C7CE]');
+        return;
+      }
+      if (!name) {
+        event.preventDefault();
+        showError('给这套画像起一个容易辨认的名字吧。');
+        nameInput.focus();
+        nameInput.classList.add('border-[#E45B6B]', 'ring-1', 'ring-[#F4C7CE]');
+        return;
+      }
+      if (!selectedGenre) {
+        event.preventDefault();
+        showError('还差一步：请选择一个偏好题材。');
+        document.getElementById('genreGrid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      try {
+        localStorage.setItem('novelmatch_pending_profile', JSON.stringify({
+          name: name,
+          genre: selectedGenre,
+          createdAt: new Date().toISOString()
+        }));
+      } catch (error) {
+        // 本地演示环境下若存储不可用，仍保持正常跳转。
+      }
+    });
+  </script>
+<!-- 模型设置弹窗 -->
+<div class="fixed inset-0 z-50 hidden" id="modelModal">
+<div class="absolute inset-0 bg-[#1A1630]/40 backdrop-blur-[2px]" data-close-model-modal=""></div>
+<div class="relative mx-auto mt-[9vh] w-[calc(100%-40px)] max-w-[520px] overflow-hidden rounded-2xl border border-white/60 bg-white shadow-[0_30px_80px_-20px_rgba(25,18,60,0.45)]">
+<div class="flex items-start justify-between border-b border-[#F0EEF5] px-6 py-4">
+<div>
+<h2 class="text-[15px] font-semibold text-[#262236]">模型设置</h2>
+<p class="mt-1 text-[11px] text-[#9691A6]">填入你自己的 API Key，评估会通过你指定的模型完成。</p>
+</div>
+<button aria-label="关闭" class="flex h-7 w-7 items-center justify-center rounded-lg text-[#9A95A9] transition hover:bg-[#F5F3FA] hover:text-[#4E3FC7]" data-close-model-modal="" type="button">
+<iconify-icon class="text-[16px]" icon="lucide:x"></iconify-icon>
+</button>
+</div>
+<div class="max-h-[62vh] overflow-y-auto px-6 py-5">
+<label class="text-[12px] font-medium text-[#3C374E]" for="modelApiKey">API Key</label>
+<div class="relative mt-2">
+<input autocomplete="off" class="h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] pl-3.5 pr-11 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelApiKey" placeholder="sk-..." spellcheck="false" type="password"/>
+<button aria-label="显示 API Key" aria-pressed="false" class="absolute right-1.5 top-1/2 flex h-7 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-[#A6A2B4] transition hover:bg-[#F5F3FA] hover:text-[#5B4BD6]" id="toggleApiKey" type="button">
+<iconify-icon class="text-[15px]" icon="lucide:eye" id="toggleApiKeyIcon"></iconify-icon>
+</button>
+</div>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">仅保存在当前浏览器的本地存储中，不会上传到 NovelMatch 服务器。</p>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="modelName">模型名称</label>
+<input autocomplete="off" class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelName" placeholder="例如 gpt-4o-mini、claude-3-5-sonnet" spellcheck="false" type="text"/>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">填写服务商文档中的模型标识，需与你使用的接口兼容。</p>
+<label class="mt-4 block text-[12px] font-medium text-[#3C374E]" for="modelBaseUrl">模型网址</label>
+<input autocomplete="off" class="mt-2 h-10 w-full rounded-xl border border-[#E4E1EC] bg-[#FCFCFE] px-3.5 text-[12.5px] text-[#2A263B] outline-none transition placeholder:text-[#AAA5B7] focus:border-[#8E80E8] focus:bg-white focus:ring-4 focus:ring-[#EFEBFF]" id="modelBaseUrl" placeholder="例如 https://api.openai.com/v1" spellcheck="false" type="text"/>
+<p class="mt-1.5 text-[10.5px] text-[#A09BAC]">接口地址需以 http:// 或 https:// 开头，通常以 /v1 结尾。</p>
+</div>
+<div class="flex items-center justify-between border-t border-[#F0EEF5] bg-[#FCFCFE] px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10.5px] text-[#A09BAC]">
+<iconify-icon class="text-[12px]" icon="lucide:shield-check"></iconify-icon>
+          仅你可见
+        </span>
+<div class="flex items-center gap-2">
+<button class="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E2EC] bg-white px-4 text-[12px] font-medium text-[#605B73] transition hover:bg-[#F8F7FB]" data-close-model-modal="" type="button">取消</button>
+<button class="inline-flex h-9 items-center justify-center rounded-lg bg-[#5B4BD6] px-4 text-[12px] font-medium text-white transition hover:bg-[#4C3DC4]" id="saveModelBtn" type="button">保存配置</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 轻提示 -->
+<div class="pointer-events-none fixed bottom-8 left-1/2 z-[60] hidden -translate-x-1/2" id="toast">
+<div class="flex items-center gap-2 rounded-xl bg-[#231D3B] px-4 py-2.5 text-[12.5px] text-white shadow-[0_18px_40px_-18px_rgba(20,14,50,0.8)]">
+<iconify-icon class="text-[14px] text-[#A99BF5]" icon="lucide:check-circle-2" id="toastIcon"></iconify-icon>
+<span id="toastText">配置已保存</span>
+</div>
+</div>
+<script>
+    (function () {
+      const STORAGE_KEY = 'novelmatch_model_config';
+      const modal = document.getElementById('modelModal');
+      const apiKeyInput = document.getElementById('modelApiKey');
+      const modelNameInput = document.getElementById('modelName');
+      const baseUrlInput = document.getElementById('modelBaseUrl');
+      const toggleBtn = document.getElementById('toggleApiKey');
+      const toggleIcon = document.getElementById('toggleApiKeyIcon');
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toastText');
+      const toastIcon = document.getElementById('toastIcon');
+      let toastTimer = null;
+
+      function readConfig() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function isConfigured(config) {
+        return Boolean(config && config.apiKey && config.modelName && config.baseUrl);
+      }
+
+      function refreshStatus() {
+        const ready = isConfigured(readConfig());
+        Array.from(document.querySelectorAll('[data-model-status]')).forEach(function (item) {
+          item.textContent = ready ? '已配置' : '未配置';
+        });
+      }
+
+      function showToast(message, icon) {
+        toastText.textContent = message;
+        toastIcon.setAttribute('icon', icon || 'lucide:check-circle-2');
+        toast.classList.remove('hidden');
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+        toastTimer = setTimeout(function () {
+          toast.classList.add('hidden');
+        }, 2400);
+      }
+
+      function setVisible(visible) {
+        apiKeyInput.type = visible ? 'text' : 'password';
+        toggleIcon.setAttribute('icon', visible ? 'lucide:eye-off' : 'lucide:eye');
+        toggleBtn.setAttribute('aria-pressed', visible ? 'true' : 'false');
+        toggleBtn.setAttribute('aria-label', visible ? '隐藏 API Key' : '显示 API Key');
+      }
+
+      function openModal() {
+        const config = readConfig();
+        apiKeyInput.value = config.apiKey || '';
+        modelNameInput.value = config.modelName || '';
+        baseUrlInput.value = config.baseUrl || '';
+        setVisible(false);
+        modal.classList.remove('hidden');
+      }
+
+      function closeModal() {
+        modal.classList.add('hidden');
+      }
+
+      Array.from(document.querySelectorAll('[data-open-model-settings]')).forEach(function (item) {
+        item.addEventListener('click', openModal);
+      });
+      Array.from(document.querySelectorAll('[data-close-model-modal]')).forEach(function (item) {
+        item.addEventListener('click', closeModal);
+      });
+      toggleBtn.addEventListener('click', function () {
+        setVisible(apiKeyInput.type === 'password');
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+          closeModal();
+        }
+      });
+
+      document.getElementById('saveModelBtn').addEventListener('click', function () {
+        const apiKey = apiKeyInput.value.trim();
+        const modelName = modelNameInput.value.trim();
+        const baseUrl = baseUrlInput.value.trim();
+
+        if (!apiKey) {
+          showToast('请填写你的 API Key', 'lucide:circle-alert');
+          apiKeyInput.focus();
+          return;
+        }
+        if (!modelName) {
+          showToast('请填写要调用的模型名称', 'lucide:circle-alert');
+          modelNameInput.focus();
+          return;
+        }
+        if (!/^https?:\/\/\S+/i.test(baseUrl)) {
+          showToast('模型网址需以 http:// 或 https:// 开头', 'lucide:circle-alert');
+          baseUrlInput.focus();
+          return;
+        }
+
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            apiKey: apiKey,
+            modelName: modelName,
+            baseUrl: baseUrl.replace(/\/+$/, ''),
+            updatedAt: new Date().toISOString()
+          }));
+        } catch (error) {
+          showToast('浏览器存储不可用，配置未能保存', 'lucide:circle-alert');
+          return;
+        }
+        refreshStatus();
+        closeModal();
+        showToast('模型配置已保存', 'lucide:check-circle-2');
+      });
+
+      refreshStatus();
+    })();
+  </script>
+</body>
+</html>

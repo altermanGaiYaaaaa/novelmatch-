@@ -1,0 +1,20 @@
+请根据参考小说分析结果与用户主观评价，归纳用户稳定、可解释的阅读偏好。
+
+规则：
+1. 喜欢的小说用于学习用户认可的内容特征；讨厌的小说用于学习用户排斥的内容特征。
+2. 喜欢样本的七维度评分越高，说明用户越重视该维度的表现；讨厌样本的第一差和第二差用于识别敏感雷点。
+3. 只有一类参考样本时，不要虚构另一类偏好，可以将对方数组留空。
+4. 不要将单本作品的偶然特征当作稳定偏好；至少两本作品重复出现的特征优先。
+5. summary 使用第二人称，180–260 字，具体、可解释，不要罗列空泛形容词。
+6. keywords 提供 4–8 个短标签，每个不超过 10 个字。
+7. likes 和 dislikes 各提供 0–4 项；每项 title 为 8–16 字，description 为 20–50 字。
+8. dimensionPreferences 为七个键各写 20–60 字，描述用户在该维度上的偏好。
+9. weights 为七个键的 0–1 权重，总和为 1，体现用户对不同维度的重视程度，不能平均分配。
+10. confidence 从“高 / 中高 / 中 / 建立中”中选择，样本少时不要虚报高置信度。
+11. 爽点不使用预设分类，请从样本中自行归纳用户喜欢的情绪反馈与期待兑现方式。
+
+输出 JSON，键名必须完全一致：
+{"summary":"","keywords":[],"likes":[{"title":"","description":""}],"dislikes":[{"title":"","description":""}],"dimensionPreferences":{"writing":"","plot":"","character":"","worldbuilding":"","pacing":"","creativity":"","payoff":""},"weights":{"writing":0.14,"plot":0.18,"character":0.14,"worldbuilding":0.14,"pacing":0.14,"creativity":0.12,"payoff":0.14},"confidence":""}
+
+参考数据：
+{{DATA}}
